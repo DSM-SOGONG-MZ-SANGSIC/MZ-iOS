@@ -14,5 +14,5 @@ public extension TargetDependency.SPM {
     static let KeychainSwift = TargetDependency.external(name: "KeychainSwift", condition: .none)
     static let RxFlow = TargetDependency.external(name: "RxFlow", condition: .none)
     static let Kingfisher = TargetDependency.external(name: "Kingfisher", condition: .none)
-    static let GoogleSignIn = TargetDependency.external(name: "GoogleSignIn", condition: .none)
+    static let GoogleSignInSwift = TargetDependency.external(name: "GoogleSignInSwift", condition: .none)
 }

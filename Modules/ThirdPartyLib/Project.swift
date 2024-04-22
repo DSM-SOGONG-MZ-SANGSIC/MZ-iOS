@@ -13,7 +13,7 @@ let project = Project(
             infoPlist: .default,
             sources: ["Sources/**"],
             dependencies: [
-                .SPM.GoogleSignIn,
+                .SPM.GoogleSignInSwift,
                 .SPM.KeychainSwift,
                 .SPM.Kingfisher,
                 .SPM.Moya,

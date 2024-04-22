@@ -15,7 +15,7 @@ import PackageDescription
             "KeychainSwift": .framework,
             "RxFlow": .framework,
             "Kingfisher": .framework,
-            "GoogleSignIn": .framework
+            "GoogleSignInSwift": .framework
         ]
     )
 #endif
