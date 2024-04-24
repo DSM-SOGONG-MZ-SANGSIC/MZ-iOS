@@ -33,7 +33,7 @@ class BaseVC<ViewModel: ViewModelType>: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        attrebute()
+        attribute()
         viewDidLoadRelay.accept(())
     }
 
@@ -53,5 +53,5 @@ class BaseVC<ViewModel: ViewModelType>: UIViewController {
 
     /// - 초기 설정 코드를 작성하는 함수
     /// - viewDidLoad()에서 작동
-    func attrebute() { }
+    func attribute() { }
 }
