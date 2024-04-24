@@ -12,7 +12,7 @@ class LoginViewController: BaseVC<LoginViewModel> {
 
     private let googleLoginButton = GoogleLoginButton()
 
-    override func attrebute() {
+    override func attribute() {
         view.backgroundColor = .white
     }
 
