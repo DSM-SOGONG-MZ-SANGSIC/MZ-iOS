@@ -13,8 +13,6 @@ import RxSwift
 import RxCocoa
 
 class CategoryViewController: BaseVC<CategoryViewModel> {
-    private var lineCount = 0
-    
     private let scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
         $0.backgroundColor = .clear
@@ -46,7 +44,6 @@ class CategoryViewController: BaseVC<CategoryViewModel> {
     
     override func attribute() {
         view.backgroundColor = .white
-        lineCount = viewModel.categories.value.count / 2 + 1
     }
     
     override func addView() {
@@ -66,7 +63,7 @@ class CategoryViewController: BaseVC<CategoryViewModel> {
         contentBackView.snp.makeConstraints {
             $0.edges.equalTo(scrollView.contentLayoutGuide)
             $0.width.equalToSuperview()
-            $0.height.equalTo(lineCount * 170)
+            $0.height.equalTo(1000)
         }
         titleLabel.snp.makeConstraints {
             $0.top.left.equalToSuperview().inset(20)
@@ -84,7 +81,7 @@ class CategoryViewController: BaseVC<CategoryViewModel> {
                 cellIdentifier: "CategoryCell",
                 cellType: CategoryCell.self)
             ) { _, category, cell in
-                cell.text = category
+                cell.text = category.rawValue
             }
             .disposed(by: disposeBag)
     }

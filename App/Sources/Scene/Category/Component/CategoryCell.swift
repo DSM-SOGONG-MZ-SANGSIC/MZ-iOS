@@ -18,6 +18,7 @@ class CategoryCell: UICollectionViewCell {
     
     private let textLabel = UILabel().then {
         $0.textColor = .black
+        $0.numberOfLines = 2
         $0.font = UIFont.headerH3SemiBold
     }
     private let circleImageView = UIImageView().then {
