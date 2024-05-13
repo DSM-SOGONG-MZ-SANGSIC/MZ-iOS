@@ -22,7 +22,7 @@ class CategoryCell: UICollectionViewCell {
         $0.font = UIFont.headerH3SemiBold
     }
     private let circleImageView = UIImageView().then {
-        $0.image = UIImage(named: "mosaic")
+        $0.image = UIImage(systemName: "circle.fill")
         $0.contentMode = .scaleAspectFit
     }
 
