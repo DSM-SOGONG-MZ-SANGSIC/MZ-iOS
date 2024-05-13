@@ -49,10 +49,10 @@ class CategoryViewController: BaseVC<CategoryViewModel> {
     override func addView() {
         view.addSubview(scrollView)
         scrollView.addSubview(contentBackView)
-        [
+        contentBackView.addSubViews(
             titleLabel,
             categoryCollectionView
-        ].forEach { contentBackView.addSubview($0) }
+        )
     }
     
     override func setLayout() {

@@ -41,10 +41,10 @@ class CategoryCell: UICollectionViewCell {
         self.layer.shadowColor = UIColor.black.cgColor
         self.layer.shadowRadius = 5
         
-        [
+        self.addSubViews(
             textLabel,
             circleImageView
-        ].forEach { self.addSubview($0) }
+        )
     
         setUpView()
     }
