@@ -2,6 +2,7 @@ import UIKit
 
 import RxSwift
 import RxRelay
+import RxFlow
 
 class BaseVC<ViewModel: ViewModelType>: UIViewController {
     let disposeBag = DisposeBag()
@@ -34,6 +35,7 @@ class BaseVC<ViewModel: ViewModelType>: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         attribute()
+        bind()
         viewDidLoadRelay.accept(())
     }
 
@@ -54,4 +56,8 @@ class BaseVC<ViewModel: ViewModelType>: UIViewController {
     /// - 초기 설정 코드를 작성하는 함수
     /// - viewDidLoad()에서 작동
     func attribute() { }
+
+    /// - 뷰 바인딩 코드를 작성하는 함수
+    /// - viewDidLoad()에서 작동
+    func bind() {}
 }

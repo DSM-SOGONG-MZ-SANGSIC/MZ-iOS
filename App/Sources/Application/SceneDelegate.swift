@@ -1,8 +1,11 @@
 import UIKit
+import GoogleSignIn
+import RxFlow
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    let coordinator = FlowCoordinator()
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -11,9 +14,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = LoginViewController(viewModel: LoginViewModel())
-        
-        window?.makeKeyAndVisible()
+        guard let window = self.window else { return }
+
+        let appFlow = AppFlow(presentable: window)
+        self.coordinator.coordinate(flow: appFlow, with: OneStepper(withSingleStep: MZStep.loginRequired))
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -44,6 +48,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard let url = URLContexts.first?.url else { return }
+        let _ = GIDSignIn.sharedInstance.handle(url)
+    }
 
 }
 
