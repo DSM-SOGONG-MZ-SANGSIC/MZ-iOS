@@ -33,6 +33,24 @@ class TokenStorage {
             keyChain.set(newValue, forKey: TokenType.refresh.key)
         }
     }
+    
+    func toHeader(_ tokenType: TokenType) -> [String: String] {
+        guard let accessToken = self.accessToken,
+              let refreshToken = self.refreshToken
+        else {
+            return ["Content-type": "application/json"]
+        }
+        
+        switch tokenType {
+        case .access:
+            return [
+                "Content-type": "application/json",
+                "Authorization": accessToken
+            ]
+        default:
+            return ["Content-type": "application/json"]
+        }
+    }
 
     func removeToken() {
         accessToken = nil

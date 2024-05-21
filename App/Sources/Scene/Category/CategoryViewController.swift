@@ -84,5 +84,8 @@ class CategoryViewController: BaseVC<CategoryViewModel> {
                 cell.text = category.rawValue
             }
             .disposed(by: disposeBag)
+        
+        let input = CategoryViewModel.Input(index: categoryCollectionView.rx.itemSelected.asSignal())
+        let _ = viewModel.transform(input: input)
     }
 }

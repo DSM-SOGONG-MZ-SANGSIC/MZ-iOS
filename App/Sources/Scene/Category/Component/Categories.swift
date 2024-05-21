@@ -10,4 +10,29 @@ enum Categories: String {
     case HUMOR = "유머(신조어/넌센스)"
     case SPORTS = "스포츠"
     case ETC = "기타"
+    
+    var categoryName: String {
+        get {
+            switch self {
+            case .VOCA:
+                "VOCA"
+            case .MATH:
+                "MATH"
+            case .SOCIETY:
+                "SOCIETY"
+            case .SCIENCE:
+                "SCIENCE"
+            case .HISTORY:
+                "HISTORY"
+            case .MORALITY:
+                "MORALITY"
+            case .HUMOR:
+                "HUMOR"
+            case .SPORTS:
+                "SPORTS"
+            case .ETC:
+                "ETC"
+            }
+        }
+    }
 }
