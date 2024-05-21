@@ -18,7 +18,6 @@ class CategoryFlow: Flow {
         }
     }
 
-    // TODO: - categoryView 넣기
     private func navigateToCategoryScreen() -> FlowContributors {
         let view = CategoryViewController(viewModel: container.categoryViewModel)
         presentable.pushViewController(view, animated: false)
@@ -27,6 +26,7 @@ class CategoryFlow: Flow {
             withNextStepper: view.viewModel
         ))
     }
+
     private func navigateToQuizScreen(category: String) -> FlowContributors {
         let quizFlow = QuizFlow()
         
