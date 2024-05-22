@@ -18,24 +18,24 @@ class QuizViewModel: ViewModelType, Stepper {
     }
     
     struct Output {
-        var quizzes: PublishRelay<Quizzes>
+        var quizList: PublishRelay<QuizListDTO>
     }
     
     func transform(input: Input) -> Output {
-        let quizzes = PublishRelay<Quizzes>()
+        let quizList = PublishRelay<QuizListDTO>()
         
         Observable.just(category)
             .flatMap { [self] category in
-                quizService.fetchQuizzes(category)
+                quizService.fetchQuizList(category)
             }
             .subscribe(onNext: { data, res in
                 switch res {
                 case .OK:
-                    quizzes.accept(data!)
+                    quizList.accept(data!)
                 default:
                     print(res)
                 }
             }).disposed(by: disposeBag)
-        return Output(quizzes: quizzes)
+        return Output(quizList: quizList)
     }
 }

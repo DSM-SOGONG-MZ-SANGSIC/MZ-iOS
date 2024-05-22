@@ -17,12 +17,8 @@ class CategoryViewModel: ViewModelType, Stepper {
     }
 
     func transform(input: Input) -> Output {
-        let quizzes = PublishRelay<Quizzes>()
-        
         input.index.asObservable()
-            .flatMap { index -> Single<Step> in
-                Single.just(MZStep.quizRequired(category: self.categories.value[index.row].categoryName))
-            }
+            .map { MZStep.quizRequired(category: self.categories.value[$0.row].categoryName) }
             .bind(to: steps)
             .disposed(by: disposeBag)
         

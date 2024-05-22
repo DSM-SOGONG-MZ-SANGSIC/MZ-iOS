@@ -2,7 +2,7 @@ import Foundation
 import Moya
 
 enum QuizAPI {
-    case fetchQuizzes(_ category: String)
+    case fetchQuizList(_ category: String)
 }
 
 extension QuizAPI: TargetType {
@@ -12,21 +12,21 @@ extension QuizAPI: TargetType {
     
     var path: String {
         switch self {
-        case .fetchQuizzes:
+        case .fetchQuizList:
             return "/quiz"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .fetchQuizzes:
+        case .fetchQuizList:
             return .get
         }
     }
     
     var task: Moya.Task {
         switch self {
-        case .fetchQuizzes(let category):
+        case .fetchQuizList(let category):
             return .requestParameters(
                 parameters: ["category": category],
                 encoding: URLEncoding.queryString
@@ -38,7 +38,7 @@ extension QuizAPI: TargetType {
     
     var headers: [String : String]? {
         switch self {
-        case .fetchQuizzes:
+        case .fetchQuizList:
             return TokenStorage.shared.toHeader(.access)
         }
     }

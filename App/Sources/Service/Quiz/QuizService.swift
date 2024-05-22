@@ -7,10 +7,10 @@ import RxCocoa
 class QuizService {
     private let provider = MoyaProvider<QuizAPI>(plugins: [MoyaLoggingPlugin()])
     
-    func fetchQuizzes(_ category: String) -> Single<(Quizzes?, NetworkingResult)> {
-        return provider.rx.request(.fetchQuizzes(category))
+    func fetchQuizList(_ category: String) -> Single<(QuizListDTO?, NetworkingResult)> {
+        return provider.rx.request(.fetchQuizList(category))
             .filterSuccessfulStatusCodes()
-            .map(Quizzes.self)
+            .map(QuizListDTO.self)
             .map { return ($0, .OK) }
             .catch { error in
                 print(error)
