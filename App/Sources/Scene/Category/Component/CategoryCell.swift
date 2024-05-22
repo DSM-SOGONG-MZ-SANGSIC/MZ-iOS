@@ -11,7 +11,7 @@ import SnapKit
 import Then
 
 class CategoryCell: UICollectionViewCell {
-    public var text: String {
+    var text: String {
         get { textLabel.text ?? "" }
         set { textLabel.text = newValue }
     }

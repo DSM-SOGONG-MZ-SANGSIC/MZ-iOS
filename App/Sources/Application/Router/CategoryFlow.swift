@@ -11,16 +11,31 @@ class CategoryFlow: Flow {
         switch step {
         case .categoryRequired:
             return navigateToCategoryScreen()
+        case .quizRequired(let category):
+            return navigateToQuizScreen(category: category)
         default:
             return .none
         }
     }
 
-    // TODO: - categoryView 넣기
     private func navigateToCategoryScreen() -> FlowContributors {
-        let view = UIViewController()
-        view.view.backgroundColor = .white
+        let view = CategoryViewController(viewModel: container.categoryViewModel)
         presentable.pushViewController(view, animated: false)
-        return .none
+        return .one(flowContributor: .contribute(
+            withNextPresentable: view,
+            withNextStepper: view.viewModel
+        ))
+    }
+
+    private func navigateToQuizScreen(category: String) -> FlowContributors {
+        let quizFlow = QuizFlow()
+        
+        Flows.use(quizFlow, when: .created) { [weak self] root in
+            self?.presentable.pushViewController(root, animated: true)
+        }
+        return .one(flowContributor: .contribute(
+            withNextPresentable: quizFlow,
+            withNextStepper: OneStepper(withSingleStep: MZStep.quizRequired(category: category))
+        ))
     }
 }
