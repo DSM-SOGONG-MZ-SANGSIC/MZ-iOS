@@ -1,11 +1,14 @@
 import UIKit
 import SnapKit
 import Then
+import RxSwift
+import RxCocoa
 
 class FriendRequestViewController: BaseVC<FriendRequestViewModel> {
     private let scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
         $0.backgroundColor = .clear
+        $0.contentInsetAdjustmentBehavior = .never
     }
     private let contentBackView = UIView().then {
         $0.backgroundColor = .white
@@ -61,16 +64,16 @@ class FriendRequestViewController: BaseVC<FriendRequestViewModel> {
     
     override func setLayout() {
         scrollView.snp.makeConstraints {
-            $0.top.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
-            $0.bottom.equalToSuperview()
+            $0.edges.equalTo(view.safeAreaLayoutGuide)
         }
         contentBackView.snp.makeConstraints {
             $0.edges.equalTo(scrollView.contentLayoutGuide)
             $0.width.equalToSuperview()
-            $0.height.equalTo(viewModel.users.value.count * 180)
+            $0.height.greaterThanOrEqualToSuperview()
         }
         titleLabel.snp.makeConstraints {
-            $0.top.left.equalToSuperview().inset(20)
+            $0.top.equalToSuperview()
+            $0.left.equalToSuperview().inset(20)
         }
         toFriendListButton.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(38)
@@ -85,19 +88,30 @@ class FriendRequestViewController: BaseVC<FriendRequestViewModel> {
         requestCollectionView.snp.makeConstraints {
             $0.top.equalTo(dividerView.snp.bottom).offset(20)
             $0.horizontalEdges.equalToSuperview()
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(100)
         }
     }
     
     override func bind() {
-        viewModel.users
+        let input = FriendRequestViewModel.Input(
+            toFriendListButtonTapped: toFriendListButton.rx.tap.asSignal(),
+            requestUserIndex: requestCollectionView.rx.itemSelected.asSignal()
+        )
+        let output = viewModel.transform(input: input)
+        
+        output.userList
             .bind(to: requestCollectionView.rx.items(
                 cellIdentifier: "FriendRequestCell",
-                cellType: FriendRequestCell.self)
-            ) { _, user, cell in
-                cell.userName = user
-            }
-            .disposed(by: disposeBag)
+                cellType: FriendRequestCell.self
+            )) { _, user, cell in
+                cell.userName = user.name
+                cell.imageURL = user.imageURL
+            }.disposed(by: disposeBag)
+        
+        requestCollectionView.rx.itemSelected
+            .subscribe(onNext: { _ in
+                
+            }).disposed(by: disposeBag)
     }
 }
 

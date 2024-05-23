@@ -1,18 +1,43 @@
 import Foundation
+import RxFlow
 import RxRelay
 import RxSwift
+import RxCocoa
 
-class FriendRequestViewModel: ViewModelType {
+class FriendRequestViewModel: ViewModelType, Stepper {
     var disposeBag = DisposeBag()
-    let users = BehaviorRelay<[String]>(value: ["가나다", "김첨지", "홍길동", "나라마", "마바사", "아자차", "카타파"])
-
+    var steps: PublishRelay<Step> = .init()
+    
+    private let friendService: FriendService
+    
+    init(friendService: FriendService) {
+        self.friendService = friendService
+    }
+    
     struct Input {
+        let toFriendListButtonTapped: Signal<Void>
+        let requestUserIndex: Signal<IndexPath>
     }
 
     struct Output {
+        let userList: PublishRelay<[UserEntity]>
     }
 
     func transform(input: Input) -> Output {
-        return Output()
+        let userList = PublishRelay<[UserEntity]>()
+        
+        Observable.just(())
+            .flatMap { _ in
+                self.friendService.fetchUsersToRequest()
+            }
+            .bind(to: userList)
+            .disposed(by: disposeBag) 
+        
+        input.toFriendListButtonTapped.asObservable()
+            .map { MZStep.myFriendListRequired }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
+        
+        return Output(userList: userList)
     }
 }
