@@ -35,9 +35,7 @@ class TokenStorage {
     }
     
     func toHeader(_ tokenType: TokenType) -> [String: String] {
-        guard let accessToken = self.accessToken,
-              let refreshToken = self.refreshToken
-        else {
+        guard let accessToken = self.accessToken else {
             return ["Content-type": "application/json"]
         }
         
@@ -45,7 +43,7 @@ class TokenStorage {
         case .access:
             return [
                 "Content-type": "application/json",
-                "Authorization": accessToken
+                "Authorization": "Bearer " + accessToken
             ]
         default:
             return ["Content-type": "application/json"]

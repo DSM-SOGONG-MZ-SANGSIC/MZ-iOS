@@ -7,14 +7,30 @@ import RxCocoa
 class QuizService {
     private let provider = MoyaProvider<QuizAPI>(plugins: [MoyaLoggingPlugin()])
     
-    func fetchQuizList(_ category: String) -> Single<(QuizListDTO?, NetworkingResult)> {
+    func fetchQuizList(_ category: String) -> Single<QuizListEntity> {
         return provider.rx.request(.fetchQuizList(category))
-            .filterSuccessfulStatusCodes()
             .map(QuizListDTO.self)
-            .map { return ($0, .OK) }
-            .catch { error in
-                print(error)
-                return .just((nil, .DEFAULT))
-            }
+            .map { $0.toDomain() }
+    }
+
+    func fetchQuizQuestion(_ quizID: Int) -> Single<QuestionListEntity> {
+        return provider.rx.request(.fetchQuizQuestion(quizID))
+            .map(QuestionListDTO.self)
+            .map { $0.toDomain() }
+    }
+
+    func postQuizResult(_ quizID: Int, pickID: Int) -> Single<QuizResultEntity> {
+        return provider.rx.request(.postQuizResult(quizID, pickID: pickID))
+            .map(QuizResultDTO.self)
+            .map { $0.toDomain() }
+    }
+
+//    func fetchFriendQuizResult(_ quizID: Int) -> Single<> {
+//        
+//    }
+
+    func saveQuiz(_ quizID: Int) -> Completable {
+        return provider.rx.request(.saveQuiz(quizID))
+            .asCompletable()
     }
 }

@@ -16,10 +16,8 @@ class ProfileFlow: Flow {
         }
     }
 
-    // TODO: - profileView 넣기
     private func navigateToProfileScreen() -> FlowContributors {
         let view = UIViewController()
-        view.view.backgroundColor = .blue
         presentable.pushViewController(view, animated: false)
         return .none
     }

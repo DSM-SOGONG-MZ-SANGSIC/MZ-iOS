@@ -3,7 +3,7 @@ import Foundation
 struct AppDI {
     let loginViewModel: LoginViewModel
     let categoryViewModel: CategoryViewModel
-    let quizViewModel: QuizViewModel
+    let problumViewModel: ProblumViewModel
 }
 
 extension AppDI {
@@ -14,12 +14,12 @@ extension AppDI {
 
         let loginViewModel = LoginViewModel(oauthService: oauthService)
         let categoryViewModel = CategoryViewModel()
-        let quizViewModel = QuizViewModel(quizService: quizService)
+        let problumViewModel = ProblumViewModel(quizService: quizService)
 
         return .init(
             loginViewModel: loginViewModel,
             categoryViewModel: categoryViewModel,
-            quizViewModel: quizViewModel
+            problumViewModel: problumViewModel
         )
     }
 }

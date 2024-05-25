@@ -1,6 +1,6 @@
 import Foundation
 
-enum Categories: String {
+enum CategoryType: String {
     case VOCA = "어휘"
     case MATH = "수학"
     case SOCIETY = "사회(정치/시사)"

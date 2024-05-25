@@ -7,11 +7,6 @@ struct QuizListDTO: Decodable {
 struct QuizDTO: Decodable {
     let id: Int
     let content: String
-    
-    enum CodingKeys: String, CodingKey {
-        case id = "quiz_id"
-        case content
-    }
 }
 
 extension QuizListDTO {
