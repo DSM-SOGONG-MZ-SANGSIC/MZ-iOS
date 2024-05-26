@@ -40,4 +40,20 @@ class FriendRequestViewModel: ViewModelType, Stepper {
         
         return Output(userList: userList)
     }
+    
+    func requestButtonTapped(_ userId: Int) -> Bool {
+        var isRequestSucceeded = false
+        
+        self.friendService.sendFriendRequest(userId)
+            .subscribe {
+                switch $0 {
+                case .completed:
+                    isRequestSucceeded = true
+                case .error:
+                    isRequestSucceeded = false
+                }
+            }.disposed(by: disposeBag)
+        
+        return isRequestSucceeded
+    }
 }

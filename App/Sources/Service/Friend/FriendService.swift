@@ -15,6 +15,16 @@ class FriendService {
             .map { $0.toDomain() }
     }
     
+    func sendFriendRequest(_ id: Int) ->  Completable {
+        return Completable.create { [weak self] completable in
+            guard let self else { return Disposables.create() }
+            return provider.rx.request(.sendFriendReqeust(id))
+                .subscribe(onSuccess: { _ in
+                    completable(.completed)
+                }, onFailure: { completable(.error($0)) })
+        }
+    }
+    
     func fetchFriendRequests() -> Single<[UserEntity]> {
         return provider.rx.request(.fetchFriendRequests)
             .filterSuccessfulStatusCodes()

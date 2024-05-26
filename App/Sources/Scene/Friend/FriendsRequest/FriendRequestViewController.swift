@@ -106,12 +106,24 @@ class FriendRequestViewController: BaseVC<FriendRequestViewModel> {
             )) { _, user, cell in
                 cell.userName = user.name
                 cell.imageURL = user.imageURL
+
+                cell.buttonOnTapped { _ in
+                    let alert = UIAlertController(
+                        title: "\(cell.userName)님께 친구 신청을 보내시겠어요?",
+                        message: nil,
+                        preferredStyle: .alert
+                    )
+                    alert.addAction(UIAlertAction(title: "예", style: .default) { _ in
+                        if self.viewModel.requestButtonTapped(user.id) == true {
+                            self.dismiss(animated: true)
+                        }
+                    })
+                    alert.addAction(UIAlertAction(title: "아니오", style: .default) { _ in
+                        self.dismiss(animated: true)
+                    })
+                    self.present(alert, animated: true)
+                }
             }.disposed(by: disposeBag)
-        
-        requestCollectionView.rx.itemSelected
-            .subscribe(onNext: { _ in
-                
-            }).disposed(by: disposeBag)
     }
 }
 

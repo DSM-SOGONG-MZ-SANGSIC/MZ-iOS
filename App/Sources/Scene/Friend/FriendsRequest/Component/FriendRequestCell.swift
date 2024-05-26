@@ -9,7 +9,8 @@ class FriendRequestCell: UICollectionViewCell {
         set { userLabel.text = newValue }
     }
     var imageURL: String = ""
-    private var buttonTapped: (() -> ()) = {}
+    var userId: Int = 0
+    private var buttonTapped: ((Int) -> ())?
     
     private let circleImageView = UIImageView().then {
         $0.image = UIImage(systemName: "circle.fill")
@@ -52,9 +53,9 @@ class FriendRequestCell: UICollectionViewCell {
         )
     
         setUpView()
-        
+
         requestButton.addAction(UIAction { [weak self] _ in
-            self?.buttonTapped()
+            self?.buttonTapped!(self?.userId ?? 0)
         }, for: .allTouchEvents)
     }
         
@@ -80,7 +81,7 @@ class FriendRequestCell: UICollectionViewCell {
         }
     }
     
-    private func buttonOnTapped(buttonTapped: @escaping () -> ()) {
+    func buttonOnTapped(buttonTapped: @escaping (Int) -> ()) {
         self.buttonTapped = buttonTapped
     }
 }

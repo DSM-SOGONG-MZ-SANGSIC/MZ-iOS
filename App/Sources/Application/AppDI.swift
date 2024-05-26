@@ -21,7 +21,7 @@ extension AppDI {
         let problumViewModel = ProblumViewModel(quizService: quizService)
         let quizViewModel = QuizViewModel(quizService: quizService)
         let friendRequestViewModel = FriendRequestViewModel(friendService: friendService)
-        let myFriendListViewModel = MyFriendListViewModel()
+        let myFriendListViewModel = MyFriendListViewModel(friendService: friendService)
 
         return .init(
             loginViewModel: loginViewModel,

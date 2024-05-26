@@ -3,6 +3,7 @@ import Moya
 
 enum FriendAPI {
     case fetchUsersToRequest
+    case sendFriendReqeust(_ id: Int)
     case fetchFriendRequests
     case fetchMyFriends
 }
@@ -16,6 +17,8 @@ extension FriendAPI: TargetType {
         switch self {
         case .fetchUsersToRequest:
             return "/users"
+        case .sendFriendReqeust(let id):
+            return "/friends/\(id)"
         case .fetchFriendRequests:
             return "/friends/applied"
         case .fetchMyFriends:
@@ -27,6 +30,8 @@ extension FriendAPI: TargetType {
         switch self {
         case .fetchUsersToRequest, .fetchFriendRequests, .fetchMyFriends:
             return .get
+        case .sendFriendReqeust:
+            return .post
         }
     }
     
@@ -39,7 +44,7 @@ extension FriendAPI: TargetType {
     
     var headers: [String : String]? {
         switch self {
-        case .fetchUsersToRequest, .fetchFriendRequests, .fetchMyFriends:
+        case .fetchUsersToRequest, .sendFriendReqeust, .fetchFriendRequests, .fetchMyFriends:
             return TokenStorage.shared.toHeader(.access)
         }
     }
