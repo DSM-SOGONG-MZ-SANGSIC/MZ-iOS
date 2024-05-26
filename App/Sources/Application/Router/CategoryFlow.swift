@@ -27,9 +27,8 @@ class CategoryFlow: Flow {
         ))
     }
 
-    private func navigateToQuizScreen(category: String) -> FlowContributors {
+    private func navigateToQuizScreen(category: CategoryType) -> FlowContributors {
         let quizFlow = QuizFlow()
-        
         Flows.use(quizFlow, when: .created) { [weak self] root in
             self?.presentable.pushViewController(root, animated: true)
         }

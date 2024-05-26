@@ -66,7 +66,8 @@ class CategoryViewController: BaseVC<CategoryViewModel> {
             $0.height.equalTo(1000)
         }
         titleLabel.snp.makeConstraints {
-            $0.top.left.equalToSuperview().inset(20)
+            $0.top.equalToSuperview()
+            $0.left.equalToSuperview().inset(20)
         }
         categoryCollectionView.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(56)
