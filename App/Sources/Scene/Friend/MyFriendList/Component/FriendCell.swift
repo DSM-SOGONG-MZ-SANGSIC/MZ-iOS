@@ -12,6 +12,9 @@ class FriendCell: UICollectionViewCell {
     private let circleImageView = UIImageView().then {
         $0.image = UIImage(systemName: "circle.fill")
         $0.contentMode = .scaleAspectFit
+        $0.layer.cornerRadius = 24
+        $0.layer.borderColor = UIColor.gray500.cgColor
+        $0.layer.borderWidth = 1.5
     }
     private let userLabel = UILabel().then {
         $0.textColor = .black
@@ -47,7 +50,7 @@ class FriendCell: UICollectionViewCell {
             $0.width.height.equalTo(48)
         }
         userLabel.snp.makeConstraints {
-            $0.verticalEdges.equalToSuperview().inset(20)
+            $0.centerY.equalToSuperview()
             $0.left.equalTo(circleImageView.snp.right).offset(36)
         }
     }

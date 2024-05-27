@@ -33,6 +33,26 @@ class FriendService {
             .map { $0.toDomain() }
     }
     
+    func acceptRequest(_ id: Int) -> Completable {
+        return Completable.create { [weak self] completable in
+            guard let self else { return Disposables.create() }
+            return provider.rx.request(.acceptReqeust(id))
+                .subscribe(onSuccess: { _ in
+                    completable(.completed)
+                }, onFailure: { completable(.error($0)) })
+        }
+    }
+    
+    func denyRequest(_ id: Int) -> Completable {
+        return Completable.create { [weak self] completable in
+            guard let self else { return Disposables.create() }
+            return provider.rx.request(.denyReqeust(id))
+                .subscribe(onSuccess: { _ in
+                    completable(.completed)
+                }, onFailure: { completable(.error($0)) })
+        }
+    }
+    
     func fetchMyFriends() -> Single<[UserEntity]> {
         return provider.rx.request(.fetchMyFriends)
             .filterSuccessfulStatusCodes()

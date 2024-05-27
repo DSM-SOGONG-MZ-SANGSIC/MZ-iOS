@@ -57,6 +57,8 @@ class MyFriendListViewController: BaseVC<MyFriendListViewModel> {
     
     override func attribute() {
         view.backgroundColor = .white
+        viewModel.fetchRequests()
+        viewModel.fetchMyFriends()
     }
     
     override func addView() {
@@ -79,12 +81,15 @@ class MyFriendListViewController: BaseVC<MyFriendListViewModel> {
             $0.edges.equalTo(scrollView.contentLayoutGuide)
             $0.width.equalToSuperview()
             $0.height.greaterThanOrEqualToSuperview()
+//            $0.top.equalToSuperview()
+//            $0.bottom.greaterThanOrEqualToSuperview()
         }
         requestSectionLabel.snp.makeConstraints {
             $0.top.left.equalToSuperview().inset(24)
         }
         requestCollectionView.snp.makeConstraints {
             $0.top.equalTo(requestSectionLabel.snp.bottom).offset(20)
+            $0.height.equalTo(200)
             $0.horizontalEdges.equalToSuperview().inset(24)
         }
         dividerView.snp.makeConstraints {
@@ -97,26 +102,32 @@ class MyFriendListViewController: BaseVC<MyFriendListViewModel> {
             $0.left.equalToSuperview().inset(24)
         }
         friendCollectionView.snp.makeConstraints {
-            $0.top.equalTo(requestSectionLabel.snp.bottom).offset(20)
+            $0.top.equalTo(friendSectionLabel.snp.bottom).offset(20)
             $0.horizontalEdges.equalToSuperview().inset(24)
+            $0.height.equalTo(200)
             $0.bottom.equalToSuperview().inset(100)
         }
     }
 
     override func bind() {
-        let input = MyFriendListViewModel.Input()
-        let output = viewModel.transform(input: input)
-        
-        output.requests
+        viewModel.requests
             .bind(to: requestCollectionView.rx.items(
                 cellIdentifier: "RequestCell",
                 cellType: RequestCell.self
-            )) { _, user, cell in
+            )) { index, user, cell in
                 cell.userName = user.name
                 cell.imageURL = user.imageURL
-            }.disposed(by: disposeBag)
+                
+                cell.acceptTapped {
+                    self.viewModel.acceptRequest(user.id)
+                }
+                cell.denyTapped {
+                    self.viewModel.denyRequest(user.id)
+                }
+            }
+            .disposed(by: disposeBag)
         
-        output.myFriends
+        viewModel.myFriends
             .bind(to: friendCollectionView.rx.items(
                 cellIdentifier: "FriendCell",
                 cellType: FriendCell.self

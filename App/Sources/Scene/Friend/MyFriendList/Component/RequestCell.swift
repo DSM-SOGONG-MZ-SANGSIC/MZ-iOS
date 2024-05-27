@@ -3,7 +3,8 @@ import SnapKit
 import Then
 
 class RequestCell: UICollectionViewCell {
-    private var buttonTapped: (() -> ())?
+    private var acceptTapped: (() -> ())?
+    private var denyTapped: (() -> ())?
     
     var userName: String {
         get { userLabel.text ?? "" }
@@ -14,7 +15,7 @@ class RequestCell: UICollectionViewCell {
     private let circleImageView = UIImageView().then {
         $0.image = UIImage(systemName: "circle.fill")
         $0.contentMode = .scaleAspectFit
-        $0.layer.cornerRadius = 45
+        $0.layer.cornerRadius = 24
         $0.layer.borderColor = UIColor.gray500.cgColor
         $0.layer.borderWidth = 1.5
     }
@@ -23,12 +24,10 @@ class RequestCell: UICollectionViewCell {
         $0.font = .headerH2Medium
     }
     private let acceptButton = UIButton(type: .system).then {
-        $0.setTitle("", for: .normal)
         $0.setImage(UIImage(systemName: "checkmark"), for: .normal)
         $0.tintColor = UIColor(named: "green")
     }
     private let denyButton = UIButton(type: .system).then {
-        $0.setTitle("", for: .normal)
         $0.setImage(UIImage(systemName: "xmark"), for: .normal)
         $0.tintColor = UIColor(named: "red")
     }
@@ -53,10 +52,10 @@ class RequestCell: UICollectionViewCell {
         setUpView()
         
         acceptButton.addAction(UIAction { [weak self] _ in
-            self?.buttonTapped!()
+            self?.acceptTapped!()
         }, for: .allTouchEvents)
         denyButton.addAction(UIAction { [weak self] _ in
-            self?.buttonTapped!()
+            self?.denyTapped!()
         }, for: .allTouchEvents)
     }
     
@@ -71,22 +70,25 @@ class RequestCell: UICollectionViewCell {
             $0.width.height.equalTo(48)
         }
         userLabel.snp.makeConstraints {
-            $0.verticalEdges.equalToSuperview().inset(22)
+            $0.centerY.equalToSuperview()
             $0.left.equalTo(circleImageView.snp.right).offset(36)
         }
         denyButton.snp.makeConstraints {
-            $0.width.height.equalTo(16)
+            $0.width.height.equalTo(20)
             $0.centerY.equalToSuperview()
             $0.right.equalToSuperview().inset(30)
         }
         acceptButton.snp.makeConstraints {
-            $0.width.height.equalTo(16)
+            $0.width.height.equalTo(20)
             $0.centerY.equalToSuperview()
-            $0.right.equalTo(denyButton.snp.left).offset(34)
+            $0.right.equalTo(denyButton.snp.left).offset(-34)
         }
     }
     
-    private func buttonOnTapped(buttonTapped: @escaping () -> ()) {
-        self.buttonTapped = buttonTapped
+    func acceptTapped(buttonTapped: @escaping () -> ()) {
+        self.acceptTapped = buttonTapped
+    }
+    func denyTapped(buttonTapped: @escaping () -> ()) {
+        self.denyTapped = buttonTapped
     }
 }

@@ -2,6 +2,7 @@ import Foundation
 import RxFlow
 import RxRelay
 import RxSwift
+import RxCocoa
 
 class MyFriendListViewModel: ViewModelType, Stepper {
     var steps: PublishRelay<Step> = .init()
@@ -13,31 +14,69 @@ class MyFriendListViewModel: ViewModelType, Stepper {
         self.friendService = friendService
     }
     
+    let requests = PublishRelay<[UserEntity]>()
+    let myFriends = PublishRelay<[UserEntity]>()
+    
     struct Input {
+        let selectedIndex: Signal<IndexPath>
     }
     
     struct Output {
-        let requests: PublishRelay<[UserEntity]>
-        let myFriends: PublishRelay<[UserEntity]>
     }
     
     func transform(input: Input) -> Output {
-        let requests = PublishRelay<[UserEntity]>()
-        let myFriends = PublishRelay<[UserEntity]>()
-        
+        return Output()
+    }
+    
+    func fetchRequests() {
         Observable.just(())
             .flatMap { _ in
                 self.friendService.fetchFriendRequests()
             }
-            .bind(to: requests)
+            .bind(to: self.requests)
             .disposed(by: disposeBag)
+    }
+    
+    func fetchMyFriends() {
         Observable.just(())
             .flatMap { _ in
                 self.friendService.fetchMyFriends()
             }
-            .bind(to: myFriends)
+            .bind(to: self.myFriends)
             .disposed(by: disposeBag)
-        
-        return Output(requests: requests, myFriends: myFriends)
+    }
+    
+    func acceptRequest(_ userId: Int) {
+        self.friendService.acceptRequest(userId)
+            .subscribe { [self] in
+                switch $0 {
+                case .completed:
+                    self.friendService.fetchFriendRequests().asObservable()
+                        .bind(to: requests)
+                        .disposed(by: disposeBag)
+                    self.friendService.fetchMyFriends().asObservable()
+                        .bind(to: myFriends)
+                        .disposed(by: disposeBag)
+                case .error:
+                    print("Error Occured")
+                }
+            }.disposed(by: disposeBag)
+    }
+    
+    func denyRequest(_ userId: Int) {
+        self.friendService.denyRequest(userId)
+            .subscribe { [self] in
+                switch $0 {
+                case .completed:
+                    self.friendService.fetchFriendRequests().asObservable()
+                        .bind(to: requests)
+                        .disposed(by: disposeBag)
+                    self.friendService.fetchMyFriends().asObservable()
+                        .bind(to: myFriends)
+                        .disposed(by: disposeBag)
+                case .error:
+                    print("Error Occured")
+                }
+            }.disposed(by: disposeBag)
     }
 }

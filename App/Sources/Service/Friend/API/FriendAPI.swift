@@ -5,6 +5,8 @@ enum FriendAPI {
     case fetchUsersToRequest
     case sendFriendReqeust(_ id: Int)
     case fetchFriendRequests
+    case acceptReqeust(_ id: Int)
+    case denyReqeust(_ id: Int)
     case fetchMyFriends
 }
 
@@ -21,6 +23,10 @@ extension FriendAPI: TargetType {
             return "/friends/\(id)"
         case .fetchFriendRequests:
             return "/friends/applied"
+        case .acceptReqeust(let id):
+            return "/friends/\(id)"
+        case .denyReqeust(let id):
+            return "/friends/\(id)"
         case .fetchMyFriends:
             return "/friends"
         }
@@ -32,6 +38,10 @@ extension FriendAPI: TargetType {
             return .get
         case .sendFriendReqeust:
             return .post
+        case .acceptReqeust:
+            return .patch
+        case .denyReqeust:
+            return .delete
         }
     }
     
@@ -44,7 +54,7 @@ extension FriendAPI: TargetType {
     
     var headers: [String : String]? {
         switch self {
-        case .fetchUsersToRequest, .sendFriendReqeust, .fetchFriendRequests, .fetchMyFriends:
+        case .fetchUsersToRequest, .sendFriendReqeust, .fetchFriendRequests, .fetchMyFriends, .acceptReqeust, .denyReqeust:
             return TokenStorage.shared.toHeader(.access)
         }
     }
