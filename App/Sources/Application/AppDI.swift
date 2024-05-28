@@ -26,7 +26,7 @@ extension AppDI {
         return .init(
             loginViewModel: loginViewModel,
             categoryViewModel: categoryViewModel,
-            problumViewModel: problumViewModel
+            problumViewModel: problumViewModel,
             quizViewModel: quizViewModel, 
             friendRequestViewModel: friendRequestViewModel,
             myFriendListViewModel: myFriendListViewModel
