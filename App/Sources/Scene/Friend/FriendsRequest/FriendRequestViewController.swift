@@ -42,7 +42,6 @@ class FriendRequestViewController: BaseVC<FriendRequestViewModel> {
         flowLayout.itemSize = CGSize(width: UIScreen.main.bounds.width - 48, height: 118)
         $0.register(FriendRequestCell.self, forCellWithReuseIdentifier: "FriendRequestCell")
         $0.showsVerticalScrollIndicator = false
-        $0.showsHorizontalScrollIndicator = false
         $0.isScrollEnabled = false
         $0.collectionViewLayout = flowLayout
     }
@@ -68,8 +67,7 @@ class FriendRequestViewController: BaseVC<FriendRequestViewModel> {
         }
         contentBackView.snp.makeConstraints {
             $0.edges.equalTo(scrollView.contentLayoutGuide)
-            $0.width.equalToSuperview()
-            $0.height.greaterThanOrEqualToSuperview()
+            $0.width.equalTo(scrollView.frameLayoutGuide)
         }
         titleLabel.snp.makeConstraints {
             $0.top.equalToSuperview()
@@ -88,22 +86,22 @@ class FriendRequestViewController: BaseVC<FriendRequestViewModel> {
         requestCollectionView.snp.makeConstraints {
             $0.top.equalTo(dividerView.snp.bottom).offset(20)
             $0.horizontalEdges.equalToSuperview()
-            $0.bottom.equalToSuperview().inset(100)
+            $0.height.equalTo(viewModel.userList.value.count * 134)
+            $0.bottom.equalToSuperview().inset(20)
         }
     }
     
     override func bind() {
         let input = FriendRequestViewModel.Input(
-            toFriendListButtonTapped: toFriendListButton.rx.tap.asSignal(),
-            requestUserIndex: requestCollectionView.rx.itemSelected.asSignal()
+            toFriendListButtonTapped: toFriendListButton.rx.tap.asSignal()
         )
         let output = viewModel.transform(input: input)
         
-        output.userList
+        viewModel.userList
             .bind(to: requestCollectionView.rx.items(
                 cellIdentifier: "FriendRequestCell",
                 cellType: FriendRequestCell.self
-            )) { _, user, cell in
+            )) { [self] _, user, cell in
                 cell.userName = user.name
                 cell.imageURL = user.imageURL
 
@@ -126,4 +124,3 @@ class FriendRequestViewController: BaseVC<FriendRequestViewModel> {
             }.disposed(by: disposeBag)
     }
 }
-

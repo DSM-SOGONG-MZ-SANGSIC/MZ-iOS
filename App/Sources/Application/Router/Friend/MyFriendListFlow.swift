@@ -8,6 +8,7 @@ class MyFriendListFlow: Flow {
 
     init() {
         self.presentable = MyFriendListViewController(viewModel: container.myFriendListViewModel)
+        self.presentable.hidesBottomBarWhenPushed = true
     }
 
     func navigate(to step: any Step) -> FlowContributors {

@@ -12,13 +12,14 @@ class MyFriendListViewModel: ViewModelType, Stepper {
     
     init(friendService: FriendService) {
         self.friendService = friendService
+        self.fetchRequests()
+        self.fetchMyFriends()
     }
     
-    let requests = PublishRelay<[UserEntity]>()
-    let myFriends = PublishRelay<[UserEntity]>()
+    let requests = BehaviorRelay<[UserEntity]>(value: [])
+    let myFriends = BehaviorRelay<[UserEntity]>(value: [])
     
     struct Input {
-        let selectedIndex: Signal<IndexPath>
     }
     
     struct Output {

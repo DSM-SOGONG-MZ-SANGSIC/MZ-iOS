@@ -28,7 +28,6 @@ class MyFriendListViewController: BaseVC<MyFriendListViewModel> {
         flowLayout.itemSize = CGSize(width: UIScreen.main.bounds.width - 48, height: 76)
         $0.register(RequestCell.self, forCellWithReuseIdentifier: "RequestCell")
         $0.showsVerticalScrollIndicator = false
-        $0.showsHorizontalScrollIndicator = false
         $0.isScrollEnabled = false
         $0.collectionViewLayout = flowLayout
     }
@@ -50,20 +49,16 @@ class MyFriendListViewController: BaseVC<MyFriendListViewModel> {
         flowLayout.itemSize = CGSize(width: UIScreen.main.bounds.width - 48, height: 76)
         $0.register(FriendCell.self, forCellWithReuseIdentifier: "FriendCell")
         $0.showsVerticalScrollIndicator = false
-        $0.showsHorizontalScrollIndicator = false
         $0.isScrollEnabled = false
         $0.collectionViewLayout = flowLayout
     }
     
     override func attribute() {
         view.backgroundColor = .white
-        viewModel.fetchRequests()
-        viewModel.fetchMyFriends()
+        self.hidesBottomBarWhenPushed = true
     }
     
     override func addView() {
-        view.addSubview(scrollView)
-        scrollView.addSubview(contentBackView)
         contentBackView.addSubViews(
             requestSectionLabel,
             requestCollectionView,
@@ -71,6 +66,8 @@ class MyFriendListViewController: BaseVC<MyFriendListViewModel> {
             friendSectionLabel,
             friendCollectionView
         )
+        scrollView.addSubview(contentBackView)
+        view.addSubview(scrollView)
     }
     
     override func setLayout() {
@@ -79,17 +76,15 @@ class MyFriendListViewController: BaseVC<MyFriendListViewModel> {
         }
         contentBackView.snp.makeConstraints {
             $0.edges.equalTo(scrollView.contentLayoutGuide)
-            $0.width.equalToSuperview()
-            $0.height.greaterThanOrEqualToSuperview()
-//            $0.top.equalToSuperview()
-//            $0.bottom.greaterThanOrEqualToSuperview()
+            $0.width.equalTo(scrollView.frameLayoutGuide)
+            $0.bottom.greaterThanOrEqualToSuperview()
         }
         requestSectionLabel.snp.makeConstraints {
             $0.top.left.equalToSuperview().inset(24)
         }
         requestCollectionView.snp.makeConstraints {
             $0.top.equalTo(requestSectionLabel.snp.bottom).offset(20)
-            $0.height.equalTo(200)
+            $0.height.equalTo(viewModel.requests.value.count * 90)
             $0.horizontalEdges.equalToSuperview().inset(24)
         }
         dividerView.snp.makeConstraints {
@@ -104,8 +99,8 @@ class MyFriendListViewController: BaseVC<MyFriendListViewModel> {
         friendCollectionView.snp.makeConstraints {
             $0.top.equalTo(friendSectionLabel.snp.bottom).offset(20)
             $0.horizontalEdges.equalToSuperview().inset(24)
-            $0.height.equalTo(200)
-            $0.bottom.equalToSuperview().inset(100)
+            $0.height.equalTo(viewModel.myFriends.value.count * 90)
+            $0.bottom.equalToSuperview().inset(28)
         }
     }
 
