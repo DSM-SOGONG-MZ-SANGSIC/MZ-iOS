@@ -7,6 +7,7 @@ enum MZStep: Step {
     case categoryRequired
     case quizRequired(category: CategoryType)
     case friendRequired
+    case myFriendListRequired
     case profileRequired
     case loginRequired
     case navigateToBack
