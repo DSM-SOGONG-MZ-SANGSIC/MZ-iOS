@@ -6,6 +6,8 @@ struct AppDI {
     let problumViewModel: ProblumViewModel
     let friendRequestViewModel: FriendRequestViewModel
     let myFriendListViewModel: MyFriendListViewModel
+    let savedProblumViewModel: SavedProblumViewModel
+    let savedQuizDetailViewModel: SavedQuizDetailViewModel
 }
 
 extension AppDI {
@@ -20,13 +22,17 @@ extension AppDI {
         let problumViewModel = ProblumViewModel(quizService: quizService)
         let friendRequestViewModel = FriendRequestViewModel(friendService: friendService)
         let myFriendListViewModel = MyFriendListViewModel(friendService: friendService)
+        let savedProblumViewModel = SavedProblumViewModel(quizService: quizService)
+        let savedQuizDetailViewModel = SavedQuizDetailViewModel(quizService: quizService)
 
         return .init(
             loginViewModel: loginViewModel,
             categoryViewModel: categoryViewModel,
             problumViewModel: problumViewModel,
             friendRequestViewModel: friendRequestViewModel,
-            myFriendListViewModel: myFriendListViewModel
+            myFriendListViewModel: myFriendListViewModel,
+            savedProblumViewModel: savedProblumViewModel,
+            savedQuizDetailViewModel: savedQuizDetailViewModel
         )
     }
 }

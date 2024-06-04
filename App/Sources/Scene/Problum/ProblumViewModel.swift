@@ -52,7 +52,7 @@ class ProblumViewModel: ViewModelType, Stepper {
 
         input.fetchQuizList
             .flatMap {
-                self.quizService.fetchQuizList($0.categoryName)
+                self.quizService.fetchQuizList($0.rawValue)
             }
             .map { $0.quizList }
             .subscribe(
