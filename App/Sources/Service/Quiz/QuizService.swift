@@ -33,4 +33,10 @@ class QuizService {
         return provider.rx.request(.saveQuiz(quizID))
             .asCompletable()
     }
+
+    func fetchSavedQuiz() -> Single<SavedQuizListEntity> {
+        return provider.rx.request(.fetchSavedQuiz)
+            .map(SavedQuizListDTO.self)
+            .map { $0.toDomain() }
+    }
 }

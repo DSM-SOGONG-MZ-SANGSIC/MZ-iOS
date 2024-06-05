@@ -4,9 +4,14 @@ import Then
 
 class QuestionButton: UIButton {
 
-    init(title: String) {
+    init(
+        title: String,
+        isAnswer: Bool = false
+    ) {
         super.init(frame: .zero)
         attribute()
+        backgroundColor = isAnswer ? .gray900 : .gray50
+        questionTitleLable.textColor = isAnswer ? .white : .black
         questionTitleLable.text = title
     }
 
@@ -28,7 +33,6 @@ class QuestionButton: UIButton {
         self.snp.makeConstraints {
             $0.height.equalTo(60)
         }
-        backgroundColor = .gray50
         layer.cornerRadius = 16
         layer.borderWidth = 1
         layer.borderColor = UIColor.gray400.cgColor
