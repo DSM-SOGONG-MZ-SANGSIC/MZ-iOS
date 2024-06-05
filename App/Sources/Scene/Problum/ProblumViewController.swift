@@ -101,6 +101,10 @@ class ProblumViewController: BaseVC<ProblumViewModel> {
                 }
             )
             .disposed(by: disposeBag)
+
+        output.correntFriend.asObservable()
+            .bind(onNext: quizResultView.setCorrentFriend(_:))
+            .disposed(by: disposeBag)
         
         output.saveQuizSuccess.asObservable()
             .subscribe(

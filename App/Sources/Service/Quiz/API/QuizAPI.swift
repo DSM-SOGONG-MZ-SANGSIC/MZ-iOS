@@ -20,7 +20,7 @@ extension QuizAPI: TargetType {
         case .fetchQuizList: return "/quiz"
         case let .fetchQuizQuestion(quizID): return "/quiz/pick/\(quizID)"
         case let .postQuizResult(quizID, _): return "/quiz/\(quizID)"
-        case let .fetchFriendQuizResult(quizID): return "/friend/\(quizID)"
+        case let .fetchFriendQuizResult(quizID): return "/quiz/friend/\(quizID)"
         case let .saveQuiz(quizID): return "/quiz/user/\(quizID)"
         case .fetchSavedQuiz: return "/quiz/saved"
         }
