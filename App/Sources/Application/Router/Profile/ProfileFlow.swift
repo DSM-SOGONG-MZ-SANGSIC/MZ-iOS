@@ -17,8 +17,8 @@ class ProfileFlow: Flow {
     }
 
     private func navigateToProfileScreen() -> FlowContributors {
-        let view = UIViewController()
+        let view = ProfileViewController(viewModel: container.profileViewModel)
         presentable.pushViewController(view, animated: false)
-        return .none
+        return .one(flowContributor: .contribute(withNextPresentable: view, withNextStepper: view.viewModel))
     }
 }
