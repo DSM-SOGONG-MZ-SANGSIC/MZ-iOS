@@ -18,10 +18,11 @@ class ProfileView: UIView {
         set { nameLabel.text = newValue }
     }
     var email: String {
-        get { nameLabel.text ?? "" }
-        set { nameLabel.text = newValue }
+        get { emailLabel.text ?? "" }
+        set { emailLabel.text = newValue }
     }
     private let imageView = UIImageView().then {
+        $0.layer.cornerRadius = 45
         $0.contentMode = .scaleAspectFit
     }
     private let plusButton = UIButton(type: .system).then {
@@ -30,6 +31,7 @@ class ProfileView: UIView {
         $0.tintColor = .gray900
         $0.layer.borderColor = UIColor.gray900.cgColor
         $0.layer.borderWidth = 1
+        $0.layer.cornerRadius = 14
     }
     private let nameLabel = UILabel().then {
         $0.font = .headerH2SemiBold
@@ -45,6 +47,7 @@ class ProfileView: UIView {
         
         self.layer.borderColor = UIColor.gray900.cgColor
         self.layer.borderWidth = 1
+        self.layer.cornerRadius = 8
         
         imageView.kf.setImage(with: URL(string: imageURL))
         
