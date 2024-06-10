@@ -10,5 +10,7 @@ enum MZStep: Step {
     case myFriendListRequired
     case profileRequired
     case loginRequired
+    case savedQuizRequired
+    case savedQuizDetailRequired(savedQuizData: SavedQuizEntity)
     case navigateToBack
 }

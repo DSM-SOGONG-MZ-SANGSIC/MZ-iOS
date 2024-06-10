@@ -1,37 +1,40 @@
 import Foundation
 
 enum CategoryType: String {
-    case VOCA = "어휘"
-    case MATH = "수학"
-    case SOCIETY = "사회(정치/시사)"
-    case SCIENCE = "과학"
-    case HISTORY = "역사(사건/인물)"
-    case MORALITY = "도덕"
-    case HUMOR = "유머(신조어/넌센스)"
-    case SPORTS = "스포츠"
-    case ETC = "기타"
+    case VOCA = "VOCA"
+    case MATH = "MATH"
+    case SOCIETY = "SOCIETY"
+    case SCIENCE = "SCIENCE"
+    case HISTORY = "HISTORY"
+    case MORALITY = "MORALITY"
+    case HUMOR = "HUMOR"
+    case SPORTS = "SPORTS"
+    case ETC = "ETC"
+    case NONE = "NONE"
     
     var categoryName: String {
         get {
             switch self {
             case .VOCA:
-                "VOCA"
+                "어휘"
             case .MATH:
-                "MATH"
+                "수학"
             case .SOCIETY:
-                "SOCIETY"
+                "사회(정치/시사)"
             case .SCIENCE:
-                "SCIENCE"
+                "과학"
             case .HISTORY:
-                "HISTORY"
+                "역사(사건/인물)"
             case .MORALITY:
-                "MORALITY"
+                "도덕"
             case .HUMOR:
-                "HUMOR"
+                "유머(신조어/넌센스)"
             case .SPORTS:
-                "SPORTS"
+                "스포츠"
             case .ETC:
-                "ETC"
+                "기타"
+            case .NONE:
+                "알 수 없음"
             }
         }
     }

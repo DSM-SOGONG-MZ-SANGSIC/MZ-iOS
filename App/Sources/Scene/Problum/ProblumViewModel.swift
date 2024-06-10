@@ -29,6 +29,7 @@ class ProblumViewModel: ViewModelType, Stepper {
         let quizContent: Signal<(Int, QuizEntity, [QuestionEntity])>
         let quizResult: Signal<(QuizResultEntity, Bool)>
         let saveQuizSuccess: Signal<Void>
+        let correntFriend: Signal<CorrectFriendsEntity>
     }
     
     func transform(input: Input) -> Output {
@@ -36,6 +37,7 @@ class ProblumViewModel: ViewModelType, Stepper {
         let quizResult = PublishRelay<(QuizResultEntity, Bool)>()
         let quizContent = PublishRelay<(Int, QuizEntity, [QuestionEntity])>()
         let saveQuizSuccess = PublishRelay<Void>()
+        let correntFriend = PublishRelay<CorrectFriendsEntity>()
 
         input.fetchQuestion
             .filter { !self.quizList.isEmpty }
@@ -52,7 +54,7 @@ class ProblumViewModel: ViewModelType, Stepper {
 
         input.fetchQuizList
             .flatMap {
-                self.quizService.fetchQuizList($0.categoryName)
+                self.quizService.fetchQuizList($0.rawValue)
             }
             .map { $0.quizList }
             .subscribe(
@@ -80,6 +82,18 @@ class ProblumViewModel: ViewModelType, Stepper {
             .bind(to: quizResult)
             .disposed(by: disposeBag)
 
+        input.seletedQuestion
+            .flatMap { [self] _ in
+                self.quizService.fetchFriendQuizResult(quizList[quizNumber].id)
+                .catch {
+                    print($0)
+                    return .never()
+                }
+            }
+            .bind(to: correntFriend)
+            .disposed(by: disposeBag)
+            
+
         input.navigetToBack
             .map { MZStep.navigateToBack }
             .bind(to: steps)
@@ -98,7 +112,8 @@ class ProblumViewModel: ViewModelType, Stepper {
             fetchQuizListSuccess: fetchQuizListSuccess.asSignal(),
             quizContent: quizContent.asSignal(),
             quizResult: quizResult.asSignal(),
-            saveQuizSuccess: saveQuizSuccess.asSignal()
+            saveQuizSuccess: saveQuizSuccess.asSignal(),
+            correntFriend: correntFriend.asSignal()
         )
     }
 }

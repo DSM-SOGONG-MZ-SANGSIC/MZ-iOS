@@ -41,7 +41,12 @@ class CategoryViewController: BaseVC<CategoryViewModel> {
         $0.isScrollEnabled = false
         $0.collectionViewLayout = flowLayout
     }
-    
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.tabBar.isHidden = false
+    }
+
     override func attribute() {
         view.backgroundColor = .white
     }

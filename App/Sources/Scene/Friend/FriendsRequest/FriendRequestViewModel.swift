@@ -12,7 +12,7 @@ class FriendRequestViewModel: ViewModelType, Stepper {
     
     init(friendService: FriendService) {
         self.friendService = friendService
-        self.fetchUsers()
+//        self.fetchUsers()
     }
     
     let userList = BehaviorRelay<[UserEntity]>(value: [])

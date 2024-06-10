@@ -25,12 +25,20 @@ class QuizService {
             .map { $0.toDomain() }
     }
 
-//    func fetchFriendQuizResult(_ quizID: Int) -> Single<> {
-//        
-//    }
+    func fetchFriendQuizResult(_ quizID: Int) -> Single<CorrectFriendsEntity> {
+        return provider.rx.request(.fetchFriendQuizResult(quizID))
+            .map(CorrectFriendsDTO.self)
+            .map { $0.toDomain() }
+    }
 
     func saveQuiz(_ quizID: Int) -> Completable {
         return provider.rx.request(.saveQuiz(quizID))
             .asCompletable()
+    }
+
+    func fetchSavedQuiz() -> Single<SavedQuizListEntity> {
+        return provider.rx.request(.fetchSavedQuiz)
+            .map(SavedQuizListDTO.self)
+            .map { $0.toDomain() }
     }
 }

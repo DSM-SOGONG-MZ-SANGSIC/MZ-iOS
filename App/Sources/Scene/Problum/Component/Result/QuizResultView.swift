@@ -57,10 +57,14 @@ class QuizResultView: BaseView {
 }
 
 extension QuizResultView {
-    func setQuizResult(_ result: (QuizResultEntity, Bool)) {
+    func setQuizResult( _ result: (QuizResultEntity, Bool)) {
         resultContentView.setContent(result.0)
         nextQuizButton.isHidden = result.1
         backButton.isHidden = !result.1
         self.isHidden = false
+    }
+
+    func setCorrentFriend(_ friend: CorrectFriendsEntity) {
+        friendResultView.setFriendResult(count: friend.correctFriends)
     }
 }
