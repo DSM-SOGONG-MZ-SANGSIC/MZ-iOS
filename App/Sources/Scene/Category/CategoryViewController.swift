@@ -87,7 +87,7 @@ class CategoryViewController: BaseVC<CategoryViewModel> {
                 cellIdentifier: "CategoryCell",
                 cellType: CategoryCell.self)
             ) { _, category, cell in
-                cell.text = category.rawValue
+                cell.text = category.categoryName
             }
             .disposed(by: disposeBag)
         

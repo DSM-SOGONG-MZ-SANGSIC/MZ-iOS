@@ -12,8 +12,11 @@ import Then
 import RxSwift
 import RxCocoa
 import RxFlow
+import PhotosUI
 
 class ProfileViewController: BaseVC<ProfileViewModel> {
+    private let newProfileImage = PublishRelay<UIImage>()
+    
     private let titleLabel = UILabel().then {
         $0.text = "👋🏻 마이페이지"
         $0.font = UIFont.headerH1SemiBold
@@ -31,6 +34,7 @@ class ProfileViewController: BaseVC<ProfileViewModel> {
         $0.setTitleColor(.gray900, for: .normal)
         $0.titleLabel?.font = .headerH3Medium
         $0.contentHorizontalAlignment = .left
+        $0.showsMenuAsPrimaryAction = true
     }
     private let savedButton = UIButton(type: .system).then {
         $0.layer.borderColor = UIColor.gray900.cgColor
@@ -41,20 +45,27 @@ class ProfileViewController: BaseVC<ProfileViewModel> {
         $0.titleLabel?.font = .headerH3Medium
         $0.contentHorizontalAlignment = .left
     }
-    private let withdrawalButton = UIButton(type: .system).then {
-        $0.layer.borderColor = UIColor.gray900.cgColor
-        $0.layer.borderWidth = 1
-        $0.layer.cornerRadius = 8
-        $0.setTitle("   회원 탈퇴", for: .normal)
-        $0.setTitleColor(.gray900, for: .normal)
-        $0.titleLabel?.font = .headerH3Medium
-        $0.contentHorizontalAlignment = .left
-    }
     
     override func attribute() {
         view.backgroundColor = .white
         profileView.name = "홍길동"
         profileView.email = "gil-dong@dsm.hs.kr"
+        
+        let menuButtonTapped = { (action: UIAction) in
+            self.favoriteButton.setTitle("   관심 카테고리    ‣    \(action.title)", for: .normal)
+            print(toCatergoryType(action.title))
+        }
+        favoriteButton.menu = UIMenu(children: [
+            UIAction(title: "어휘", handler: menuButtonTapped),
+            UIAction(title: "수학", handler: menuButtonTapped),
+            UIAction(title: "사회(정치/시사)", handler: menuButtonTapped),
+            UIAction(title: "과학", handler: menuButtonTapped),
+            UIAction(title: "역사(사건/인물)", handler: menuButtonTapped),
+            UIAction(title: "도덕", handler: menuButtonTapped),
+            UIAction(title: "유머(신조어/넌센스)", handler: menuButtonTapped),
+            UIAction(title: "스포츠", handler: menuButtonTapped),
+            UIAction(title: "기타", handler: menuButtonTapped),
+        ])
     }
     
     override func addView() {
@@ -63,8 +74,7 @@ class ProfileViewController: BaseVC<ProfileViewModel> {
             profileView,
             dividerView,
             favoriteButton,
-            savedButton,
-            withdrawalButton
+            savedButton
         )
     }
     
@@ -92,10 +102,34 @@ class ProfileViewController: BaseVC<ProfileViewModel> {
             $0.horizontalEdges.equalToSuperview().inset(24)
             $0.height.equalTo(52)
         }
-        withdrawalButton.snp.makeConstraints {
-            $0.top.equalTo(savedButton.snp.bottom).offset(20)
-            $0.horizontalEdges.equalToSuperview().inset(24)
-            $0.height.equalTo(52)
+    }
+    
+    override func bind() {
+        profileView.plusButton.rx.tap 
+            .subscribe(onNext: {
+                var config = PHPickerConfiguration()
+                config.selectionLimit = 1
+                config.filter = .any(of: [.images, .livePhotos, .screenshots])
+                let photoPickerVC = PHPickerViewController(configuration: config)
+                photoPickerVC.delegate = self
+                self.present(photoPickerVC, animated: true)
+            }).disposed(by: disposeBag)
+    }
+}
+
+extension ProfileViewController: PHPickerViewControllerDelegate {
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true)
+        
+        let itemProvider = results.first?.itemProvider
+        
+        if let itemProvider = itemProvider, itemProvider.canLoadObject(ofClass: UIImage.self) {
+            itemProvider.loadObject(ofClass: UIImage.self) { image, _ in
+                DispatchQueue.main.async { [self] in
+                    profileView.imageView.image = image as? UIImage ?? .init()
+                    newProfileImage.accept(image as? UIImage ?? .init())
+                }
+            }
         }
     }
 }

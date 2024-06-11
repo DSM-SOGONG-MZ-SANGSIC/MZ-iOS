@@ -21,11 +21,13 @@ class ProfileView: UIView {
         get { emailLabel.text ?? "" }
         set { emailLabel.text = newValue }
     }
-    private let imageView = UIImageView().then {
+    let imageView = UIImageView().then {
+        $0.clipsToBounds = true
         $0.layer.cornerRadius = 45
-        $0.contentMode = .scaleAspectFit
+        $0.layer.borderColor = UIColor.gray900.cgColor
+        $0.layer.borderWidth = 0.5
     }
-    private let plusButton = UIButton(type: .system).then {
+    let plusButton = UIButton(type: .system).then {
         $0.setImage(UIImage(systemName: "plus"), for: .normal)
         $0.backgroundColor = .white
         $0.tintColor = .gray900
