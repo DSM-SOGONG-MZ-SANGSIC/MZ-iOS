@@ -105,7 +105,12 @@ class ProfileViewController: BaseVC<ProfileViewModel> {
     }
     
     override func bind() {
-        profileView.plusButton.rx.tap 
+        let input = ProfileViewModel.Input(
+            toSavedButtonTapped: savedButton.rx.tap.take(1).asSignal(onErrorSignalWith: .empty())
+        )
+        let output = viewModel.transform(input: input)
+        
+        profileView.plusButton.rx.tap
             .subscribe(onNext: {
                 var config = PHPickerConfiguration()
                 config.selectionLimit = 1

@@ -16,12 +16,18 @@ class ProfileViewModel: ViewModelType, Stepper {
     var steps: PublishRelay<Step> = .init()
     
     struct Input {
+        let toSavedButtonTapped: Signal<Void>
     }
     
     struct Output {
     }
     
     func transform(input: Input) -> Output {
+        input.toSavedButtonTapped.asObservable()
+            .map { MZStep.savedQuizRequired }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
+        
         return Output()
     }
 }

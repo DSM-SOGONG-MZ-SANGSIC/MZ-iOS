@@ -94,7 +94,9 @@ class CategoryViewController: BaseVC<CategoryViewModel> {
             }
             .disposed(by: disposeBag)
         
-        let input = CategoryViewModel.Input(index: categoryCollectionView.rx.itemSelected.asSignal())
+        let input = CategoryViewModel.Input(
+            index: categoryCollectionView.rx.itemSelected.take(1).asSignal(onErrorSignalWith: .empty())
+        )
         let _ = viewModel.transform(input: input)
     }
 }

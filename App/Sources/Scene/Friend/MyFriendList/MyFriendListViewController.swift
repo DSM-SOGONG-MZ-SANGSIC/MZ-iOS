@@ -55,8 +55,7 @@ class MyFriendListViewController: BaseVC<MyFriendListViewModel> {
 
     override func attribute() {
         view.backgroundColor = .white
-        self.hidesBottomBarWhenPushed = true
-        self.navigationController?.navigationBar.topItem?.backButtonTitle = ""
+        navigationController?.navigationBar.topItem?.backButtonTitle = ""
         navigationItem.title = "친구 목록"
         
         viewModel.fetchRequests()

@@ -16,7 +16,7 @@ class SavedProblumViewModel: ViewModelType, Stepper {
     }
     
     struct Input {
-        let viewWillAppear: Observable<Void>
+        let viewDidAppear: Observable<Void>
         let selectedIndexpath: Observable<IndexPath>
     }
 
@@ -26,7 +26,8 @@ class SavedProblumViewModel: ViewModelType, Stepper {
 
     func transform(input: Input) -> Output {
         let savedQuizList = PublishRelay<[SavedQuizEntity]>()
-        input.viewWillAppear
+        
+        input.viewDidAppear
             .flatMap {
                 self.quizService.fetchSavedQuiz()
                     .catch {

@@ -93,6 +93,7 @@ class FriendRequestViewController: BaseVC<FriendRequestViewModel> {
     
     override func bind() {
         let input = FriendRequestViewModel.Input(
+            viewDidAppear: viewDidAppearRelay.asObservable(),
             toFriendListButtonTapped: toFriendListButton.rx.tap.take(1).asSignal(onErrorSignalWith: .empty())
         )
         let output = viewModel.transform(input: input)

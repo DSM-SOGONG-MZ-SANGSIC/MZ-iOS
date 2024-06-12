@@ -15,6 +15,7 @@ class FriendRequestViewModel: ViewModelType, Stepper {
     }
     
     struct Input {
+        let viewDidAppear: Observable<Void>
         let toFriendListButtonTapped: Signal<Void>
     }
 
@@ -30,7 +31,7 @@ class FriendRequestViewModel: ViewModelType, Stepper {
             .bind(to: steps)
             .disposed(by: disposeBag)
         
-        Observable.just(())
+        input.viewDidAppear
             .flatMap { _ in
                 self.friendService.fetchUsersToRequest()
             }

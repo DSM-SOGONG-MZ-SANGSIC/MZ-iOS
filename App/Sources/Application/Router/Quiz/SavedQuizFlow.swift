@@ -8,6 +8,7 @@ class SavedQuizFlow: Flow {
 
     init() {
         self.presentable = SavedProblumViewController(viewModel: container.savedProblumViewModel)
+        self.presentable.hidesBottomBarWhenPushed = true
     }
 
     func navigate(to step: any Step) -> FlowContributors {

@@ -20,8 +20,8 @@ class ProblumViewController: BaseVC<ProblumViewModel> {
     }
     var category: CategoryType?
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         tabBarController?.tabBar.isHidden = true
         guard let category else { return }
         fetchQuizList.accept(category)
@@ -36,6 +36,7 @@ class ProblumViewController: BaseVC<ProblumViewModel> {
         view.backgroundColor = .white
         navigationItem.title = category?.categoryName
         navigationItem.rightBarButtonItem = saveButton
+        navigationController?.navigationBar.topItem?.backButtonTitle = ""
     }
     
     override func addView() {
