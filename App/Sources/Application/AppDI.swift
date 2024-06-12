@@ -34,8 +34,7 @@ extension AppDI {
             friendRequestViewModel: friendRequestViewModel,
             myFriendListViewModel: myFriendListViewModel,
             savedProblumViewModel: savedProblumViewModel,
-            savedQuizDetailViewModel: savedQuizDetailViewModel
-            myFriendListViewModel: myFriendListViewModel,
+            savedQuizDetailViewModel: savedQuizDetailViewModel,
             profileViewModel: profileViewModel
         )
     }

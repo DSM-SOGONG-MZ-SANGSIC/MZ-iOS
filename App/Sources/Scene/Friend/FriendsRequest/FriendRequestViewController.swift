@@ -45,7 +45,7 @@ class FriendRequestViewController: BaseVC<FriendRequestViewModel> {
         $0.isScrollEnabled = false
         $0.collectionViewLayout = flowLayout
     }
-    
+
     override func attribute() {
         view.backgroundColor = .white
     }
@@ -86,18 +86,21 @@ class FriendRequestViewController: BaseVC<FriendRequestViewModel> {
         requestCollectionView.snp.makeConstraints {
             $0.top.equalTo(dividerView.snp.bottom).offset(20)
             $0.horizontalEdges.equalToSuperview()
-            $0.height.equalTo(viewModel.userList.value.count * 134)
+            $0.height.equalTo(536)
             $0.bottom.equalToSuperview().inset(20)
         }
     }
     
     override func bind() {
         let input = FriendRequestViewModel.Input(
-            toFriendListButtonTapped: toFriendListButton.rx.tap.asSignal()
+            toFriendListButtonTapped: toFriendListButton.rx.tap.take(1).asSignal(onErrorSignalWith: .empty())
         )
         let output = viewModel.transform(input: input)
         
-        viewModel.userList
+        requestCollectionView.delegate = nil
+        requestCollectionView.dataSource = nil
+        
+        output.userList
             .bind(to: requestCollectionView.rx.items(
                 cellIdentifier: "FriendRequestCell",
                 cellType: FriendRequestCell.self

@@ -34,7 +34,7 @@ class ProblumViewController: BaseVC<ProblumViewModel> {
     
     override func attribute() {
         view.backgroundColor = .white
-        navigationItem.title = category?.rawValue
+        navigationItem.title = category?.categoryName
         navigationItem.rightBarButtonItem = saveButton
     }
     

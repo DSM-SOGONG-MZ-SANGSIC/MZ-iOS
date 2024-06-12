@@ -12,34 +12,32 @@ class FriendRequestViewModel: ViewModelType, Stepper {
     
     init(friendService: FriendService) {
         self.friendService = friendService
-//        self.fetchUsers()
     }
-    
-    let userList = BehaviorRelay<[UserEntity]>(value: [])
     
     struct Input {
         let toFriendListButtonTapped: Signal<Void>
     }
 
     struct Output {
+        let userList: BehaviorRelay<[UserEntity]>
     }
 
     func transform(input: Input) -> Output {
+        let userList = BehaviorRelay<[UserEntity]>(value: [])
+        
         input.toFriendListButtonTapped.asObservable()
             .map { MZStep.myFriendListRequired }
             .bind(to: steps)
             .disposed(by: disposeBag)
         
-        return Output()
-    }
-    
-    func fetchUsers() {
         Observable.just(())
             .flatMap { _ in
                 self.friendService.fetchUsersToRequest()
             }
             .bind(to: userList)
             .disposed(by: disposeBag)
+        
+        return Output(userList: userList)
     }
     
     func requestButtonTapped(_ userId: Int) -> Bool {

@@ -82,6 +82,9 @@ class CategoryViewController: BaseVC<CategoryViewModel> {
     }
     
     override func bind() {
+        categoryCollectionView.delegate = nil
+        categoryCollectionView.dataSource = nil
+        
         viewModel.categories
             .bind(to: categoryCollectionView.rx.items(
                 cellIdentifier: "CategoryCell",

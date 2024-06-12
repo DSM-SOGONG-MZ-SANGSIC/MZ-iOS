@@ -52,10 +52,15 @@ class MyFriendListViewController: BaseVC<MyFriendListViewModel> {
         $0.isScrollEnabled = false
         $0.collectionViewLayout = flowLayout
     }
-    
+
     override func attribute() {
         view.backgroundColor = .white
         self.hidesBottomBarWhenPushed = true
+        self.navigationController?.navigationBar.topItem?.backButtonTitle = ""
+        navigationItem.title = "친구 목록"
+        
+        viewModel.fetchRequests()
+        viewModel.fetchMyFriends()
     }
     
     override func addView() {
@@ -84,7 +89,7 @@ class MyFriendListViewController: BaseVC<MyFriendListViewModel> {
         }
         requestCollectionView.snp.makeConstraints {
             $0.top.equalTo(requestSectionLabel.snp.bottom).offset(20)
-            $0.height.equalTo(viewModel.requests.value.count * 90)
+            $0.height.equalTo(90)
             $0.horizontalEdges.equalToSuperview().inset(24)
         }
         dividerView.snp.makeConstraints {
@@ -99,12 +104,17 @@ class MyFriendListViewController: BaseVC<MyFriendListViewModel> {
         friendCollectionView.snp.makeConstraints {
             $0.top.equalTo(friendSectionLabel.snp.bottom).offset(20)
             $0.horizontalEdges.equalToSuperview().inset(24)
-            $0.height.equalTo(viewModel.myFriends.value.count * 90)
+            $0.height.equalTo(360)
             $0.bottom.equalToSuperview().inset(28)
         }
     }
 
     override func bind() {
+        requestCollectionView.dataSource = nil
+        requestCollectionView.delegate = nil
+        friendCollectionView.dataSource = nil
+        friendCollectionView.delegate = nil
+        
         viewModel.requests
             .bind(to: requestCollectionView.rx.items(
                 cellIdentifier: "RequestCell",
