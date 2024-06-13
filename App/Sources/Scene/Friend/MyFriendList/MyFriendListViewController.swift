@@ -20,16 +20,15 @@ class MyFriendListViewController: BaseVC<MyFriendListViewModel> {
     }
     private lazy var requestCollectionView = UICollectionView(
         frame: .zero,
-        collectionViewLayout: UICollectionViewFlowLayout()
+        collectionViewLayout: UICollectionViewFlowLayout().then {
+            $0.scrollDirection = .vertical
+            $0.minimumLineSpacing = 14
+            $0.itemSize = CGSize(width: UIScreen.main.bounds.width - 48, height: 76)
+        }
     ).then {
-        let flowLayout = UICollectionViewFlowLayout()
-        flowLayout.scrollDirection = .vertical
-        flowLayout.minimumLineSpacing = 14
-        flowLayout.itemSize = CGSize(width: UIScreen.main.bounds.width - 48, height: 76)
         $0.register(RequestCell.self, forCellWithReuseIdentifier: "RequestCell")
         $0.showsVerticalScrollIndicator = false
         $0.isScrollEnabled = false
-        $0.collectionViewLayout = flowLayout
     }
     private let dividerView = UIView().then {
         $0.backgroundColor = .gray200
@@ -88,7 +87,7 @@ class MyFriendListViewController: BaseVC<MyFriendListViewModel> {
         }
         requestCollectionView.snp.makeConstraints {
             $0.top.equalTo(requestSectionLabel.snp.bottom).offset(20)
-            $0.height.equalTo(90)
+            $0.height.equalTo(90).priority(.low)
             $0.horizontalEdges.equalToSuperview().inset(24)
         }
         dividerView.snp.makeConstraints {
@@ -103,16 +102,14 @@ class MyFriendListViewController: BaseVC<MyFriendListViewModel> {
         friendCollectionView.snp.makeConstraints {
             $0.top.equalTo(friendSectionLabel.snp.bottom).offset(20)
             $0.horizontalEdges.equalToSuperview().inset(24)
-            $0.height.equalTo(360)
+            $0.height.equalTo(20).priority(.low)
             $0.bottom.equalToSuperview().inset(28)
         }
     }
 
     override func bind() {
-        requestCollectionView.dataSource = nil
-        requestCollectionView.delegate = nil
-        friendCollectionView.dataSource = nil
-        friendCollectionView.delegate = nil
+        let input = MyFriendListViewModel.Input(index: friendCollectionView.rx.itemSelected.asSignal())
+        let _ = viewModel.transform(input: input)
         
         viewModel.requests
             .bind(to: requestCollectionView.rx.items(
@@ -139,5 +136,21 @@ class MyFriendListViewController: BaseVC<MyFriendListViewModel> {
                 cell.userName = user.name
                 cell.imageURL = user.imageURL
             }.disposed(by: disposeBag)
+        
+        requestCollectionView.rx.observe(CGSize.self, "contentSize")
+            .compactMap { $0?.height }
+            .subscribe(onNext: { [weak self] height in
+                self?.requestCollectionView.snp.updateConstraints {
+                    $0.height.equalTo(height)
+                }
+            }).disposed(by: disposeBag)
+        
+        friendCollectionView.rx.observe(CGSize.self, "contentSize")
+            .compactMap { $0?.height }
+            .subscribe(onNext: { [weak self] height in
+                self?.friendCollectionView.snp.updateConstraints {
+                    $0.height.equalTo(height)
+                }
+            }).disposed(by: disposeBag)
     }
 }

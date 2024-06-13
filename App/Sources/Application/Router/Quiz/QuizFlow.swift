@@ -8,6 +8,7 @@ class QuizFlow: Flow {
 
     init() {
         self.presentable = ProblumViewController(viewModel: container.problumViewModel)
+        self.presentable.hidesBottomBarWhenPushed = true
     }
 
     func navigate(to step: any Step) -> FlowContributors {

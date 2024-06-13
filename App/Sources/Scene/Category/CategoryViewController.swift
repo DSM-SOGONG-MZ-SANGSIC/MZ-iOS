@@ -27,19 +27,18 @@ class CategoryViewController: BaseVC<CategoryViewModel> {
     }
     private lazy var categoryCollectionView = UICollectionView(
         frame: .zero, 
-        collectionViewLayout: UICollectionViewFlowLayout()
+        collectionViewLayout: UICollectionViewFlowLayout().then {
+            $0.scrollDirection = .vertical
+            $0.minimumLineSpacing = 20
+            $0.minimumInteritemSpacing = 36
+            $0.sectionInset = UIEdgeInsets(top: 0, left: 28, bottom: 0, right: 28)
+            $0.itemSize = CGSize(width: 150, height: 150)
+        }
     ).then {
-        let flowLayout = UICollectionViewFlowLayout()
-        flowLayout.scrollDirection = .vertical
-        flowLayout.minimumInteritemSpacing = 36
-        flowLayout.minimumLineSpacing = 20
-        flowLayout.sectionInset = UIEdgeInsets(top: 0, left: 28, bottom: 0, right: 28)
-        flowLayout.itemSize = CGSize(width: 150, height: 150)
         $0.register(CategoryCell.self, forCellWithReuseIdentifier: "CategoryCell")
         $0.showsVerticalScrollIndicator = false
         $0.showsHorizontalScrollIndicator = false
         $0.isScrollEnabled = false
-        $0.collectionViewLayout = flowLayout
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -82,9 +81,6 @@ class CategoryViewController: BaseVC<CategoryViewModel> {
     }
     
     override func bind() {
-        categoryCollectionView.delegate = nil
-        categoryCollectionView.dataSource = nil
-        
         viewModel.categories
             .bind(to: categoryCollectionView.rx.items(
                 cellIdentifier: "CategoryCell",
@@ -95,7 +91,7 @@ class CategoryViewController: BaseVC<CategoryViewModel> {
             .disposed(by: disposeBag)
         
         let input = CategoryViewModel.Input(
-            index: categoryCollectionView.rx.itemSelected.take(1).asSignal(onErrorSignalWith: .empty())
+            index: categoryCollectionView.rx.itemSelected.asSignal()
         )
         let _ = viewModel.transform(input: input)
     }

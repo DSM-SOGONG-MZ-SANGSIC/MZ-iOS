@@ -12,7 +12,9 @@ import Then
 import RxSwift
 import RxCocoa
 import RxFlow
+import Kingfisher
 import PhotosUI
+import SwiftUI
 
 class ProfileViewController: BaseVC<ProfileViewModel> {
     private let newProfileImage = PublishRelay<UIImage>()
@@ -26,6 +28,7 @@ class ProfileViewController: BaseVC<ProfileViewModel> {
     private let dividerView = UIView().then {
         $0.backgroundColor = .gray200
     }
+    private lazy var chartView = UIHostingController(rootView: ChartView())
     private let favoriteButton = UIButton(type: .system).then {
         $0.layer.borderColor = UIColor.gray900.cgColor
         $0.layer.borderWidth = 1
@@ -48,12 +51,92 @@ class ProfileViewController: BaseVC<ProfileViewModel> {
     
     override func attribute() {
         view.backgroundColor = .white
-        profileView.name = "홍길동"
-        profileView.email = "gil-dong@dsm.hs.kr"
+        chartView.view.translatesAutoresizingMaskIntoConstraints = false
+        chartView.view.frame = view.frame
+        setMenuButton()
+    }
+    
+    override func addView() {
+        addChild(chartView)
+        view.addSubViews(
+            titleLabel,
+            profileView,
+            dividerView,
+            chartView.view,
+            favoriteButton,
+            savedButton
+        )
+    }
+    
+    override func setLayout() {
+        titleLabel.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide)
+            $0.left.equalToSuperview().inset(20)
+        }
+        profileView.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(34)
+            $0.horizontalEdges.equalToSuperview().inset(24)
+        }
+        dividerView.snp.makeConstraints {
+            $0.top.equalTo(profileView.snp.bottom).offset(20)
+            $0.horizontalEdges.equalToSuperview().inset(24)
+            $0.height.equalTo(1)
+        }
+        chartView.view.snp.makeConstraints {
+            $0.top.equalTo(dividerView.snp.bottom).offset(20)
+            $0.horizontalEdges.equalToSuperview().inset(24)
+            $0.height.equalTo(240)
+        }
+        favoriteButton.snp.makeConstraints {
+            $0.top.equalTo(chartView.view.snp.bottom).offset(20).priority(.low)
+            $0.horizontalEdges.equalToSuperview().inset(24)
+            $0.height.equalTo(52)
+        }
+        savedButton.snp.makeConstraints {
+            $0.top.equalTo(favoriteButton.snp.bottom).offset(20).priority(.low)
+            $0.horizontalEdges.equalToSuperview().inset(24)
+            $0.height.equalTo(52)
+        }
+    }
+    
+    override func bind() {
+        let input = ProfileViewModel.Input(
+            viewDidAppear: viewDidAppearRelay.asObservable(),
+            toSavedButtonTapped: savedButton.rx.tap.asSignal()
+        )
+        let output = viewModel.transform(input: input)
         
+        output.isProfileLoaded
+            .subscribe(onNext: { [self] in
+                if $0 == true { profileView.profile = viewModel.profile }
+            }).disposed(by: disposeBag)
+        viewModel.isCalculated
+            .subscribe(onNext: { [self] in
+                if $0 == true {
+                    chartView = UIHostingController(rootView: ChartView(
+                        userName: viewModel.profile.name, stats: viewModel.chartData
+                    ))
+                    chartView.view.isHidden = false
+                }
+                view.setNeedsLayout()
+            }).disposed(by: disposeBag)
+        profileView.plusButton.rx.tap
+            .subscribe(onNext: {
+                var config = PHPickerConfiguration()
+                config.selectionLimit = 1
+                config.filter = .any(of: [.images, .livePhotos, .screenshots])
+                let photoPickerVC = PHPickerViewController(configuration: config)
+                photoPickerVC.delegate = self
+                self.present(photoPickerVC, animated: true)
+            }).disposed(by: disposeBag)
+    }
+}
+
+extension ProfileViewController: PHPickerViewControllerDelegate {
+    func setMenuButton() {
         let menuButtonTapped = { (action: UIAction) in
             self.favoriteButton.setTitle("   관심 카테고리    ‣    \(action.title)", for: .normal)
-            print(toCatergoryType(action.title))
+            print(toCategoryType(action.title))
         }
         favoriteButton.menu = UIMenu(children: [
             UIAction(title: "어휘", handler: menuButtonTapped),
@@ -68,61 +151,6 @@ class ProfileViewController: BaseVC<ProfileViewModel> {
         ])
     }
     
-    override func addView() {
-        view.addSubViews(
-            titleLabel,
-            profileView,
-            dividerView,
-            favoriteButton,
-            savedButton
-        )
-    }
-    
-    override func setLayout() {
-        titleLabel.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).inset(20)
-            $0.left.equalToSuperview().inset(20)
-        }
-        profileView.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(34)
-            $0.horizontalEdges.equalToSuperview().inset(24)
-        }
-        dividerView.snp.makeConstraints {
-            $0.top.equalTo(profileView.snp.bottom).offset(20)
-            $0.horizontalEdges.equalToSuperview().inset(24)
-            $0.height.equalTo(1)
-        }
-        favoriteButton.snp.makeConstraints {
-            $0.top.equalTo(dividerView.snp.bottom).offset(20)
-            $0.horizontalEdges.equalToSuperview().inset(24)
-            $0.height.equalTo(52)
-        }
-        savedButton.snp.makeConstraints {
-            $0.top.equalTo(favoriteButton.snp.bottom).offset(20)
-            $0.horizontalEdges.equalToSuperview().inset(24)
-            $0.height.equalTo(52)
-        }
-    }
-    
-    override func bind() {
-        let input = ProfileViewModel.Input(
-            toSavedButtonTapped: savedButton.rx.tap.take(1).asSignal(onErrorSignalWith: .empty())
-        )
-        let output = viewModel.transform(input: input)
-        
-        profileView.plusButton.rx.tap
-            .subscribe(onNext: {
-                var config = PHPickerConfiguration()
-                config.selectionLimit = 1
-                config.filter = .any(of: [.images, .livePhotos, .screenshots])
-                let photoPickerVC = PHPickerViewController(configuration: config)
-                photoPickerVC.delegate = self
-                self.present(photoPickerVC, animated: true)
-            }).disposed(by: disposeBag)
-    }
-}
-
-extension ProfileViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
         

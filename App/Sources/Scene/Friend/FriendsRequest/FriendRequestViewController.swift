@@ -34,18 +34,17 @@ class FriendRequestViewController: BaseVC<FriendRequestViewModel> {
     }
     private lazy var requestCollectionView = UICollectionView(
         frame: .zero,
-        collectionViewLayout: UICollectionViewFlowLayout()
+        collectionViewLayout: UICollectionViewFlowLayout().then {
+            $0.scrollDirection = .vertical
+            $0.minimumLineSpacing = 16
+            $0.itemSize = CGSize(width: UIScreen.main.bounds.width - 48, height: 118)
+        }
     ).then {
-        let flowLayout = UICollectionViewFlowLayout()
-        flowLayout.scrollDirection = .vertical
-        flowLayout.minimumLineSpacing = 16
-        flowLayout.itemSize = CGSize(width: UIScreen.main.bounds.width - 48, height: 118)
         $0.register(FriendRequestCell.self, forCellWithReuseIdentifier: "FriendRequestCell")
         $0.showsVerticalScrollIndicator = false
         $0.isScrollEnabled = false
-        $0.collectionViewLayout = flowLayout
     }
-
+    
     override func attribute() {
         view.backgroundColor = .white
     }
@@ -85,22 +84,19 @@ class FriendRequestViewController: BaseVC<FriendRequestViewModel> {
         }
         requestCollectionView.snp.makeConstraints {
             $0.top.equalTo(dividerView.snp.bottom).offset(20)
-            $0.horizontalEdges.equalToSuperview()
-            $0.height.equalTo(536)
+            $0.height.equalTo(20).priority(.low)
             $0.bottom.equalToSuperview().inset(20)
+            $0.horizontalEdges.equalToSuperview()
         }
     }
     
     override func bind() {
         let input = FriendRequestViewModel.Input(
-            viewDidAppear: viewDidAppearRelay.asObservable(),
-            toFriendListButtonTapped: toFriendListButton.rx.tap.take(1).asSignal(onErrorSignalWith: .empty())
+            viewDidLoad: viewDidLoadRelay.asObservable(),
+            toFriendListButtonTapped: toFriendListButton.rx.tap.asSignal()
         )
         let output = viewModel.transform(input: input)
-        
-        requestCollectionView.delegate = nil
-        requestCollectionView.dataSource = nil
-        
+                
         output.userList
             .bind(to: requestCollectionView.rx.items(
                 cellIdentifier: "FriendRequestCell",
@@ -123,8 +119,15 @@ class FriendRequestViewController: BaseVC<FriendRequestViewModel> {
                     alert.addAction(UIAlertAction(title: "아니오", style: .default) { _ in
                         self.dismiss(animated: true)
                     })
-                    self.present(alert, animated: true)
-                }
+                    self.present(alert, animated: true)                }
             }.disposed(by: disposeBag)
+        
+        requestCollectionView.rx.observe(CGSize.self, "contentSize")
+            .compactMap { $0?.height }
+            .subscribe(onNext: { [weak self] height in
+                self?.requestCollectionView.snp.updateConstraints {
+                    $0.height.equalTo(height)
+                }
+            }).disposed(by: disposeBag)
     }
 }

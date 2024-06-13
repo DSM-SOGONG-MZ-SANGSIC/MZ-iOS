@@ -29,13 +29,13 @@ class BaseVC<ViewModel: ViewModelType>: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        bind()
         viewDidAppearRelay.accept(())
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         attribute()
+        bind()
         viewDidLoadRelay.accept(())
     }
 

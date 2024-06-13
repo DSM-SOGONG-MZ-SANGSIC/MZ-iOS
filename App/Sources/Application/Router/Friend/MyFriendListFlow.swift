@@ -16,6 +16,8 @@ class MyFriendListFlow: Flow {
         switch step {
         case .myFriendListRequired:
             return navigateToMyFriendListScreen()
+        case .friendPercentageRequired(let id):
+            return navigateToMyFriendPercentageScreen(userId: id)
         default:
             return .none
         }
@@ -25,6 +27,17 @@ class MyFriendListFlow: Flow {
         return .one(flowContributor: .contribute(
             withNextPresentable: presentable,
             withNextStepper: presentable.viewModel
+        ))
+    }
+    
+    private func navigateToMyFriendPercentageScreen(userId: Int) -> FlowContributors {
+        let friendPercentageFlow = FriendPercentageFlow()
+        Flows.use(friendPercentageFlow, when: .created) { [weak self] root in
+            self?.presentable.navigationController?.pushViewController(root, animated: true)
+        }
+        return .one(flowContributor: .contribute(
+            withNextPresentable: friendPercentageFlow,
+            withNextStepper: OneStepper(withSingleStep: MZStep.friendPercentageRequired(userId: userId))
         ))
     }
 }

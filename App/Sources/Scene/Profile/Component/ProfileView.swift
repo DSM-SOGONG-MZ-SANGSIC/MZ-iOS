@@ -12,18 +12,16 @@ import SnapKit
 import Then
 
 class ProfileView: UIView {
-    var imageURL = String()
-    var name: String {
-        get { nameLabel.text ?? "" }
-        set { nameLabel.text = newValue }
-    }
-    var email: String {
-        get { emailLabel.text ?? "" }
-        set { emailLabel.text = newValue }
+    var profile: ProfileEntity = .empty {
+        willSet {
+            nameLabel.text = newValue.name
+            emailLabel.text = newValue.email
+            imageView.kf.setImage(with: URL(string: newValue.profileImage))
+        }
     }
     let imageView = UIImageView().then {
         $0.clipsToBounds = true
-        $0.layer.cornerRadius = 45
+        $0.layer.cornerRadius = 36
         $0.layer.borderColor = UIColor.gray900.cgColor
         $0.layer.borderWidth = 0.5
     }
@@ -33,15 +31,17 @@ class ProfileView: UIView {
         $0.tintColor = .gray900
         $0.layer.borderColor = UIColor.gray900.cgColor
         $0.layer.borderWidth = 1
-        $0.layer.cornerRadius = 14
+        $0.layer.cornerRadius = 12
     }
     private let nameLabel = UILabel().then {
         $0.font = .headerH2SemiBold
         $0.textColor = .gray900
+        $0.textAlignment = .left
     }
     private let emailLabel = UILabel().then {
-        $0.font = .headerH3Light
+        $0.font = .bodyB1Light
         $0.textColor = .gray900
+        $0.textAlignment = .left
     }
     
     override init(frame: CGRect) {
@@ -50,8 +50,6 @@ class ProfileView: UIView {
         self.layer.borderColor = UIColor.gray900.cgColor
         self.layer.borderWidth = 1
         self.layer.cornerRadius = 8
-        
-        imageView.kf.setImage(with: URL(string: imageURL))
         
         addSubViews([
             imageView,
@@ -69,23 +67,23 @@ class ProfileView: UIView {
         super.layoutSubviews()
         
         imageView.snp.makeConstraints {
-            $0.width.height.equalTo(90)
+            $0.width.height.equalTo(72)
             $0.verticalEdges.left.equalToSuperview().inset(20)
         }
         plusButton.snp.makeConstraints {
-            $0.width.height.equalTo(28)
+            $0.width.height.equalTo(24)
             $0.bottom.equalTo(imageView.snp.bottom)
             $0.right.equalTo(imageView.snp.right).offset(2)
         }
         nameLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(34)
-            $0.left.equalTo(imageView.snp.right).offset(30)
-            $0.right.equalToSuperview().inset(28)
+            $0.top.equalToSuperview().inset(32)
+            $0.left.equalTo(imageView.snp.right).offset(24)
+            $0.right.equalToSuperview().inset(26)
         }
         emailLabel.snp.makeConstraints {
-            $0.bottom.equalToSuperview().inset(34)
-            $0.left.equalTo(plusButton.snp.right).offset(28)
-            $0.right.equalToSuperview().inset(28)
+            $0.bottom.equalToSuperview().inset(32)
+            $0.left.equalTo(plusButton.snp.right).offset(22)
+            $0.right.equalToSuperview().inset(26)
             $0.top.equalTo(nameLabel.snp.bottom).offset(8)
         }
     }

@@ -18,12 +18,17 @@ class MyFriendListViewModel: ViewModelType, Stepper {
     let myFriends = BehaviorRelay<[UserEntity]>(value: [])
     
     struct Input {
+        let index: Signal<IndexPath>
     }
     
     struct Output {
     }
     
     func transform(input: Input) -> Output {
+        input.index.asObservable()
+            .map { MZStep.friendPercentageRequired(userId: self.myFriends.value[$0.row].id) }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
         return Output()
     }
     

@@ -20,8 +20,8 @@ class ProblumViewController: BaseVC<ProblumViewModel> {
     }
     var category: CategoryType?
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         tabBarController?.tabBar.isHidden = true
         guard let category else { return }
         fetchQuizList.accept(category)
@@ -29,7 +29,7 @@ class ProblumViewController: BaseVC<ProblumViewModel> {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        tabBarController?.tabBar.isHidden = false
+//        tabBarController?.tabBar.isHidden = false
     }
     
     override func attribute() {
