@@ -44,7 +44,6 @@ struct ChartView: View {
         }
         .padding(20)
         .background(Color.white)
-        .border(Color.gray, width: 1)
         .frame(height: 240)
     }
 }

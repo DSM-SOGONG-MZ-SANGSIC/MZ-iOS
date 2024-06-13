@@ -23,19 +23,13 @@ class FriendPercentageViewController: BaseVC<FriendPercentageViewModel> {
     
     override func attribute() {
         view.backgroundColor = .white.withAlphaComponent(0.1)
-        self.navigationController?.isToolbarHidden = true
-        chartView.view.translatesAutoresizingMaskIntoConstraints = false
-        chartView.view.frame = view.frame
+        self.navigationItem.hidesBackButton = true
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         guard let userId else { return }
         fetchPercentage.accept(userId)
-    }
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
     }
     
     override func addView() {
@@ -75,6 +69,10 @@ class FriendPercentageViewController: BaseVC<FriendPercentageViewModel> {
                     chartView = UIHostingController(rootView: ChartView(
                         userName: viewModel.userName, stats: viewModel.chartData
                     ))
+                    chartView.view.clipsToBounds = true
+                    chartView.view.layer.cornerRadius = 8
+                    chartView.view.layer.borderColor = UIColor.gray900.cgColor
+                    chartView.view.layer.borderWidth = 1
                 }
                 view.setNeedsLayout()
             }).disposed(by: disposeBag)

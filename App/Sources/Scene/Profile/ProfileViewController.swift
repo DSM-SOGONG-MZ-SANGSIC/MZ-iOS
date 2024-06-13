@@ -51,8 +51,6 @@ class ProfileViewController: BaseVC<ProfileViewModel> {
     
     override func attribute() {
         view.backgroundColor = .white
-        chartView.view.translatesAutoresizingMaskIntoConstraints = false
-        chartView.view.frame = view.frame
         setMenuButton()
     }
     
@@ -116,7 +114,10 @@ class ProfileViewController: BaseVC<ProfileViewModel> {
                     chartView = UIHostingController(rootView: ChartView(
                         userName: viewModel.profile.name, stats: viewModel.chartData
                     ))
-                    chartView.view.isHidden = false
+                    chartView.view.clipsToBounds = true
+                    chartView.view.layer.cornerRadius = 8
+                    chartView.view.layer.borderColor = UIColor.gray900.cgColor
+                    chartView.view.layer.borderWidth = 1
                 }
                 view.setNeedsLayout()
             }).disposed(by: disposeBag)
