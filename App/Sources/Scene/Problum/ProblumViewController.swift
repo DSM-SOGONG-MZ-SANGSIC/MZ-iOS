@@ -29,13 +29,14 @@ class ProblumViewController: BaseVC<ProblumViewModel> {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        tabBarController?.tabBar.isHidden = false
+//        tabBarController?.tabBar.isHidden = false
     }
     
     override func attribute() {
         view.backgroundColor = .white
-        navigationItem.title = category?.rawValue
+        navigationItem.title = category?.categoryName
         navigationItem.rightBarButtonItem = saveButton
+        navigationController?.navigationBar.topItem?.backButtonTitle = ""
     }
     
     override func addView() {

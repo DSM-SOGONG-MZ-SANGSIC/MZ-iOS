@@ -16,14 +16,17 @@ class SavedQuizDetailViewController: BaseVC<SavedQuizDetailViewModel> {
 
     private let problumContentView = ProblumContentView()
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         guard let data = savedQuizData else { return }
         fetchPickRelay.accept(data.id)
+        
     }
 
     override func attribute() {
         view.backgroundColor = .white
+        navigationItem.title = "저장한 문제"
+        navigationController?.navigationBar.topItem?.backButtonTitle = ""
         guard let data = savedQuizData else { return }
         problumContentView.setProblumContent(quizNum: 1, content: data.content)
     }

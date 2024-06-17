@@ -11,14 +11,28 @@ class ProfileFlow: Flow {
         switch step {
         case .profileRequired:
             return navigateToProfileScreen()
+        case .savedQuizRequired:
+            return navigateToSavedQuizScreen()
         default:
             return .none
         }
     }
 
     private func navigateToProfileScreen() -> FlowContributors {
-        let view = UIViewController()
+        let view = ProfileViewController(viewModel: container.profileViewModel)
         presentable.pushViewController(view, animated: false)
-        return .none
+        return .one(flowContributor: .contribute(withNextPresentable: view, withNextStepper: view.viewModel))
+    }
+    
+    private func navigateToSavedQuizScreen() -> FlowContributors {
+        let savedQuizFlow = SavedQuizFlow()
+        
+        Flows.use(savedQuizFlow, when: .created) { [weak self] root in
+            self?.presentable.pushViewController(root, animated: true)
+        }
+        return .one(flowContributor: .contribute(
+            withNextPresentable: savedQuizFlow,
+            withNextStepper: OneStepper(withSingleStep: MZStep.savedQuizRequired)
+        ))
     }
 }

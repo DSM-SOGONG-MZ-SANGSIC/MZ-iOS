@@ -12,20 +12,23 @@ class MyFriendListViewModel: ViewModelType, Stepper {
     
     init(friendService: FriendService) {
         self.friendService = friendService
-//        self.fetchRequests()
-//        self.fetchMyFriends()
     }
     
     let requests = BehaviorRelay<[UserEntity]>(value: [])
     let myFriends = BehaviorRelay<[UserEntity]>(value: [])
     
     struct Input {
+        let index: Signal<IndexPath>
     }
     
     struct Output {
     }
     
     func transform(input: Input) -> Output {
+        input.index.asObservable()
+            .map { MZStep.friendPercentageRequired(userId: self.myFriends.value[$0.row].id) }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
         return Output()
     }
     
@@ -52,12 +55,8 @@ class MyFriendListViewModel: ViewModelType, Stepper {
             .subscribe { [self] in
                 switch $0 {
                 case .completed:
-                    self.friendService.fetchFriendRequests().asObservable()
-                        .bind(to: requests)
-                        .disposed(by: disposeBag)
-                    self.friendService.fetchMyFriends().asObservable()
-                        .bind(to: myFriends)
-                        .disposed(by: disposeBag)
+                    self.fetchRequests()
+                    self.fetchMyFriends()
                 case .error:
                     print("Error Occured")
                 }
@@ -69,12 +68,8 @@ class MyFriendListViewModel: ViewModelType, Stepper {
             .subscribe { [self] in
                 switch $0 {
                 case .completed:
-                    self.friendService.fetchFriendRequests().asObservable()
-                        .bind(to: requests)
-                        .disposed(by: disposeBag)
-                    self.friendService.fetchMyFriends().asObservable()
-                        .bind(to: myFriends)
-                        .disposed(by: disposeBag)
+                    self.fetchRequests()
+                    self.fetchMyFriends()
                 case .error:
                     print("Error Occured")
                 }

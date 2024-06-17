@@ -16,12 +16,12 @@ class SavedProblumViewController: BaseVC<SavedProblumViewModel> {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tabBarController?.tabBar.isHidden = true
     }
 
     override func attribute() {
         view.backgroundColor = .white
         navigationItem.title = "저장한 문제"
+        navigationController?.navigationBar.topItem?.backButtonTitle = ""
     }
 
     override func addView() {
@@ -36,11 +36,14 @@ class SavedProblumViewController: BaseVC<SavedProblumViewModel> {
 
     override func bind() {
         let input = SavedProblumViewModel.Input(
-            viewWillAppear: viewWillAppearRelay.asObservable(),
+            viewDidAppear: viewDidAppearRelay.asObservable(),
             selectedIndexpath: savedProblumTableView.rx.itemSelected.asObservable()
         )
         let output = viewModel.transform(input: input)
-
+        
+        savedProblumTableView.dataSource = nil
+        savedProblumTableView.delegate = nil
+        
         output.savedQuizList.asObservable()
             .bind(to: savedProblumTableView.rx.items(
                 cellIdentifier: SavedProblumCell.identifier,
